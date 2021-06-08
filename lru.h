@@ -6,8 +6,6 @@
 
 #pragma once
 
-
-
 typedef struct LRUEntry {
   char *key;
   void *value;

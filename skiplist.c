@@ -53,19 +53,17 @@ skiplistNode *slInsert(skiplist *zsl, double score, sds ele) {
   for (i = zsl->level - 1; i >= 0; i--) {
     /* store rank that is crossed to reach the insert position */
     rank[i] = i == (zsl->level - 1) ? 0 : rank[i + 1];
-    while (x->level[i].forward &&
-           (x->level[i].forward->score < score ||
-            (x->level[i].forward->score == score &&
-             sdscmp(x->level[i].forward->ele, ele) < 0))) {
+    while (x->level[i].forward && (x->level[i].forward->score < score || (x->level[i].forward->score == score &&
+                                                                          sdscmp(x->level[i].forward->ele, ele) < 0))) {
       rank[i] += x->level[i].span;
       x = x->level[i].forward;
     }
     update[i] = x;
   }
   /* we assume the element is not already inside, since we allow duplicated
-     * scores, reinserting the same element should never happen since the
-     * caller of zslInsert() should test in the hash table if the element is
-     * already inside or not. */
+   * scores, reinserting the same element should never happen since the
+   * caller of zslInsert() should test in the hash table if the element is
+   * already inside or not. */
   level = slRandomLevel();
   if (level > zsl->level) {
     for (i = zsl->level; i < level; i++) {
@@ -113,16 +111,14 @@ int slDelete(skiplist *zsl, double score, sds ele, skiplistNode **node) {
 
   x = zsl->header;
   for (i = zsl->level - 1; i >= 0; i--) {
-    while (x->level[i].forward &&
-           (x->level[i].forward->score < score ||
-            (x->level[i].forward->score == score &&
-             sdscmp(x->level[i].forward->ele, ele) < 0))) {
+    while (x->level[i].forward && (x->level[i].forward->score < score || (x->level[i].forward->score == score &&
+                                                                          sdscmp(x->level[i].forward->ele, ele) < 0))) {
       x = x->level[i].forward;
     }
     update[i] = x;
   }
   /* We may have multiple elements with the same score, what we need
-     * is to find the element with both the right score and object. */
+   * is to find the element with both the right score and object. */
   x = x->level[0].forward;
   if (x && score == x->score && sdscmp(x->ele, ele) == 0) {
     slDeleteNode(zsl, x, update);
@@ -169,8 +165,7 @@ unsigned long slGetRank(skiplist *zsl, double score, sds ele) {
   for (i = zsl->level - 1; i >= 0; i--) {
     while (x->level[i].forward &&
            (x->level[i].forward->score < score ||
-            (x->level[i].forward->score == score &&
-             sdscmp(x->level[i].forward->ele, ele) <= 0))) {
+            (x->level[i].forward->score == score && sdscmp(x->level[i].forward->ele, ele) <= 0))) {
       rank += x->level[i].span;
       x = x->level[i].forward;
     }

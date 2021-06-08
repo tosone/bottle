@@ -1,12 +1,8 @@
 #include <avl.h>
 
-int max(int a, int b) {
-  return (a > b) ? a : b;
-}
+int max(int a, int b) { return (a > b) ? a : b; }
 
-int height(avl_entry_t *entry) {
-  return entry == NULL ? 0 : entry->height;
-}
+int height(avl_entry_t *entry) { return entry == NULL ? 0 : entry->height; }
 
 avl_entry_t *avl_create_node(int key) {
   avl_entry_t *node = (avl_entry_t *)malloc(sizeof(avl_entry_t));
@@ -43,9 +39,7 @@ avl_entry_t *avl_rotate_left(avl_entry_t *x) {
   return y;
 }
 
-int avl_balance(avl_entry_t *entry) {
-  return entry == NULL ? 0 : height(entry->left) - height(entry->right);
-}
+int avl_balance(avl_entry_t *entry) { return entry == NULL ? 0 : height(entry->left) - height(entry->right); }
 
 avl_entry_t *avl_set(avl_entry_t *node, int key) {
   if (node == NULL) {
@@ -166,9 +160,7 @@ void avl_dump(avl_entry_t *entry, char *filename) {
   fclose(stream);
 }
 
-avl_entry_t *avl_create(avl_entry_t *node, int key) {
-  return NULL;
-}
+avl_entry_t *avl_create(avl_entry_t *node, int key) { return NULL; }
 
 void avl_free(avl_entry_t *entry) {
   if (entry != NULL) {

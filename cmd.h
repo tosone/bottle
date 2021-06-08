@@ -19,10 +19,10 @@
 #define MAP_COMMANDS_OK true
 #define MAP_COMMANDS_ERROR false
 
-#define command_length_check(x, y) \
-  if (commands_length x y) {       \
-    printf("%s\n", ERR_COMMAND);   \
-    return MAP_COMMANDS_ERROR;     \
+#define command_length_check(x, y)                                                                                     \
+  if (commands_length x y) {                                                                                           \
+    printf("%s\n", ERR_COMMAND);                                                                                       \
+    return MAP_COMMANDS_ERROR;                                                                                         \
   }
 
 void clear();

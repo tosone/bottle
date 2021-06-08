@@ -80,9 +80,7 @@ void LRU_set(LRU *lru, char *key, void *value, size_t value_length) {
   }
 }
 
-void LRU_print(LRU *lru) {
-  hashmap_print(lru->hmap);
-}
+void LRU_print(LRU *lru) { hashmap_print(lru->hmap); }
 
 void LRU_free(LRU *lru) {
   hashmap_free(lru->hmap);
