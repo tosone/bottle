@@ -3,11 +3,23 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <cmd.h>
+#include <cmddefine.h>
 #include <command.h>
 
-const int MAX_LINE = 256;
+#define VERSION "v1.0.0"
+
+#define COMMANDS_CHECK(x)                     \
+  if (x) {                                    \
+    commands_free(commands, commands_length); \
+    continue;                                 \
+  }
+
+#define MAX_LINE 256
 
 int main(int argc, char const *argv[]) {
+  atexit(clear);
+
   char buf[MAX_LINE] = {0};
   while (true) {
     printf("> ");
@@ -20,8 +32,29 @@ int main(int argc, char const *argv[]) {
     int commands_length;
     commands_t commands = commands_parse(buf, &commands_length);
 
-    printf("%d, %s\n", commands_length, commands[0]);
+    if (commands_length >= 1) {
+      if (strncasecmp(commands[0], COMMAND_HELP, strlen(COMMAND_HELP)) == 0) {
+        COMMANDS_CHECK(!command_help(commands, commands_length));
+      } else if (strncasecmp(commands[0], COMMAND_EXIT, strlen(COMMAND_EXIT)) == 0) {
+        commands_free(commands, commands_length);
+        return EXIT_SUCCESS;
+      } else if (strncasecmp(commands[0], COMMAND_VERSION, strlen(COMMAND_VERSION)) == 0) {
+        printf("%s\n", VERSION);
+      } else if (strncasecmp(commands[0], COMMAND_PI, strlen(COMMAND_PI)) == 0) {
+        COMMANDS_CHECK(!command_pi(commands, commands_length));
+      } else if (strncasecmp(commands[0], COMMAND_HMAP, strlen(COMMAND_HMAP)) == 0) {
+        COMMANDS_CHECK(!command_hmap(commands, commands_length));
+      } else if (strncasecmp(commands[0], COMMAND_LRU, strlen(COMMAND_LRU)) == 0) {
+        COMMANDS_CHECK(!command_lru(commands, commands_length));
+      } else if (strncasecmp(commands[0], COMMAND_AVL, strlen(COMMAND_AVL)) == 0) {
+        COMMANDS_CHECK(!command_avl(commands, commands_length));
+      } else if (strncasecmp(commands[0], COMMAND_SKLIST, strlen(COMMAND_SKLIST)) == 0) {
+        COMMANDS_CHECK(!command_sklist(commands, commands_length));
+      } else {
+        printf("%s\n", ERR_COMMAND_NOT_FOUND);
+      }
+    }
     commands_free(commands, commands_length);
   }
-  return 0;
+  return EXIT_SUCCESS;
 }

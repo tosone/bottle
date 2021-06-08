@@ -35,7 +35,7 @@ skiplistNode *slCreateNode(int level, double score, sds ele) {
  * levels are less likely to be returned. */
 int slRandomLevel(void) {
   int level = 1;
-  while ((random() & 0xFFFF) < (SKIPLIST_P * 0xFFFF))
+  while ((rand() & 0xFFFF) < (SKIPLIST_P * 0xFFFF))
     level += 1;
   return (level < SKIPLIST_MAXLEVEL) ? level : SKIPLIST_MAXLEVEL;
 }
