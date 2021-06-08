@@ -1,6 +1,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <strings.h>
 
 #include <avl.h>
 #include <cmddefine.h>

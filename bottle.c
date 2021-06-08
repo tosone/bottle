@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,8 +18,19 @@
 
 #define MAX_LINE 256
 
+void handle_signals(int signo) {
+  if (signo == SIGINT) {
+    exit(EXIT_SUCCESS);
+  }
+}
+
 int main(int argc, char const *argv[]) {
   atexit(clear);
+
+  if (signal(SIGINT, handle_signals) == SIG_ERR) {
+    printf("failed to register interrupts with kernel\n");
+    return EXIT_FAILURE;
+  }
 
   char buf[MAX_LINE] = {0};
   while (true) {
