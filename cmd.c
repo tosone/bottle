@@ -21,6 +21,7 @@ hashmap_t *hmap;
 LRU *lru;
 avl_entry_t *avl;
 skiplist *sklist;
+rbtree_t *rbtree;
 
 void clear() {
   if (hmap != NULL) {
@@ -35,7 +36,32 @@ void clear() {
   if (sklist != NULL) {
     slFree(sklist);
   }
+  // if (rbtree != NULL) {
+  //   rbtree_free(rbtree);
+  // }
   printf("clear all, bye\n");
+}
+
+bool command_rbtree(commands_t commands, int commands_length) {
+  if (rbtree == NULL) {
+    rbtree = rbtree_create();
+  }
+  command_length_check(<, 3);
+  if (strncasecmp(commands[1], COMMAND_RBTREE_SET, strlen(COMMAND_RBTREE_SET)) == 0) {
+    command_length_check(!=, 4);
+    char *key = commands[2];
+    void *value = commands[3];
+    if (rbtree_insert(rbtree, key, value, strlen(value) + 1) == NULL) {
+      return MAP_COMMANDS_ERROR;
+    }
+  } else if (strncasecmp(commands[1], COMMAND_RBTREE_DUMP, strlen(COMMAND_RBTREE_DUMP)) == 0) {
+    command_length_check(!=, 3);
+    char *filename = commands[2];
+    rbtree_dump(rbtree, filename);
+  } else {
+    return MAP_COMMANDS_ERROR;
+  }
+  return MAP_COMMANDS_OK;
 }
 
 bool command_sklist(commands_t commands, int commands_length) {

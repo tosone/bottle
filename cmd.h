@@ -8,6 +8,7 @@
 #include <command.h>
 #include <hashmap.h>
 #include <lru.h>
+#include <rbtree.h>
 #include <skiplist.h>
 
 #include <pi.h>
@@ -19,10 +20,10 @@
 #define MAP_COMMANDS_OK true
 #define MAP_COMMANDS_ERROR false
 
-#define command_length_check(x, y)                                                                                     \
-  if (commands_length x y) {                                                                                           \
-    printf("%s\n", ERR_COMMAND);                                                                                       \
-    return MAP_COMMANDS_ERROR;                                                                                         \
+#define command_length_check(x, y) \
+  if (commands_length x y) {       \
+    printf("%s\n", ERR_COMMAND);   \
+    return MAP_COMMANDS_ERROR;     \
   }
 
 void clear();
@@ -36,3 +37,4 @@ bool command_hmap(commands_t commands, int commands_length);
 bool command_lru(commands_t commands, int commands_length);
 bool command_avl(commands_t commands, int commands_length);
 bool command_sklist(commands_t commands, int commands_length);
+bool command_rbtree(commands_t commands, int commands_length);

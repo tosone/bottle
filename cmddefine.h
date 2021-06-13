@@ -30,6 +30,15 @@
 #define COMMAND_AVL_POST "post"
 #define COMMAND_AVL_DUMP "dump"
 
+#define COMMAND_RBTREE "rbtree"
+#define COMMAND_RBTREE_GET "get"
+#define COMMAND_RBTREE_SET "set"
+#define COMMAND_RBTREE_PRINT "print"
+#define COMMAND_RBTREE_IN "in"
+#define COMMAND_RBTREE_PRE "pre"
+#define COMMAND_RBTREE_POST "post"
+#define COMMAND_RBTREE_DUMP "dump"
+
 #define COMMAND_SKLIST "sklist"
 #define COMMAND_SKLIST_SET "set"
 #define COMMAND_SKLIST_GET "get"
