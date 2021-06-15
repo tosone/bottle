@@ -122,6 +122,7 @@ rbtree_entry_t *rbtree_insert(rbtree_t *rbtree, const char *key, const void *val
   if (rbtree->root == NULL) {
     entry->color = rbtree_color_black;
     rbtree->root = entry;
+    rbtree->count++;
     return entry;
   }
   rbtree_entry_t *node = rbtree->root;
@@ -149,6 +150,8 @@ rbtree_entry_t *rbtree_insert(rbtree_t *rbtree, const char *key, const void *val
   }
 
   rbtree_insert_fixup(rbtree, entry);
+
+  rbtree->count++;
 
   return entry;
 }

@@ -1,17 +1,17 @@
 TARGET    = bottle
 
-CFLAGS   += -Os -std=c99 -Wall -I.
+CFLAGS   += -Os -std=c99 -Wall -I. -fdata-sections -ffunction-sections -finline-functions
 PREFIX   ?= /usr/local
 
-objects   = $(patsubst %.c, %.o, $(wildcard *.c))
+OBJECTS   = $(patsubst %.c, %.o, $(wildcard *.c))
 
 .PHONY: all
-all: $(objects)
+all: $(OBJECTS)
 	$(CC) -o $(TARGET) $^
 
 .PHONY: clean
 clean:
-	$(RM) -r *.o *.out $(TARGET) $(TARGET).exe
+	$(RM) -r *.o *.a *.out $(TARGET) $(TARGET).exe
 
 .PHONY: install
 install:
