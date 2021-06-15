@@ -38,6 +38,7 @@
 #define COMMAND_RBTREE_PRE "pre"
 #define COMMAND_RBTREE_POST "post"
 #define COMMAND_RBTREE_DUMP "dump"
+#define COMMAND_RBTREE_DEL "del"
 
 #define COMMAND_SKLIST "sklist"
 #define COMMAND_SKLIST_SET "set"

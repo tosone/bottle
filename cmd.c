@@ -58,6 +58,9 @@ bool command_rbtree(commands_t commands, int commands_length) {
     command_length_check(!=, 3);
     char *filename = commands[2];
     rbtree_dump(rbtree, filename);
+  } else if (strncasecmp(commands[1], COMMAND_RBTREE_DEL, strlen(COMMAND_RBTREE_DEL)) == 0) {
+    command_length_check(!=, 3);
+    rbtree_delete(rbtree, commands[2]);
   } else {
     return MAP_COMMANDS_ERROR;
   }
