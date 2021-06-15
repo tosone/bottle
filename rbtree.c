@@ -9,8 +9,9 @@ rbtree_t *rbtree_create() {
 void rbtree_rotate_left(rbtree_t *rbtree, rbtree_entry_t *node) {
   rbtree_entry_t *right = node->right;
   node->right = right->left;
-  if (right->left != NULL)
+  if (right->left != NULL) {
     right->left->parent = node;
+  }
 
   right->parent = node->parent;
 
@@ -30,8 +31,9 @@ void rbtree_rotate_left(rbtree_t *rbtree, rbtree_entry_t *node) {
 void rbtree_rotate_right(rbtree_t *rbtree, rbtree_entry_t *node) {
   rbtree_entry_t *left = node->left;
   node->left = left->right;
-  if (left->right != NULL)
+  if (left->right != NULL) {
     left->right->parent = node;
+  }
 
   left->parent = node->parent;
 
@@ -187,11 +189,11 @@ void rbtree_delete_fixup(rbtree_t *rbtree, rbtree_entry_t *child, rbtree_entry_t
   int go_up = 1;
 
   /* determine sibling to the node that is one-black short */
-  if (child_parent->right == child)
+  if (child_parent->right == child) {
     sibling = child_parent->left;
-  else
+  } else {
     sibling = child_parent->right;
-
+  }
   while (go_up) {
     if (child_parent == NULL) {
       /* removed parent==black from root, every path, so ok */
@@ -201,36 +203,41 @@ void rbtree_delete_fixup(rbtree_t *rbtree, rbtree_entry_t *child, rbtree_entry_t
     if (sibling->color == rbtree_color_red) { /* rotate to get a black sibling */
       child_parent->color = rbtree_color_red;
       sibling->color = rbtree_color_black;
-      if (child_parent->right == child)
+      if (child_parent->right == child) {
         rbtree_rotate_right(rbtree, child_parent);
-      else
+      } else {
         rbtree_rotate_left(rbtree, child_parent);
+      }
       /* new sibling after rotation */
-      if (child_parent->right == child)
+      if (child_parent->right == child) {
         sibling = child_parent->left;
-      else
+      } else {
         sibling = child_parent->right;
+      }
     }
 
     if (child_parent->color == rbtree_color_black && sibling->color == rbtree_color_black && sibling->left->color == rbtree_color_black && sibling->right->color == rbtree_color_black) { /* fixup local with recolor of sibling */
-      if (sibling != NULL)
+      if (sibling != NULL) {
         sibling->color = rbtree_color_red;
+      }
 
       child = child_parent;
       child_parent = child_parent->parent;
       /* prepare to go up, new sibling */
-      if (child_parent->right == child)
+      if (child_parent->right == child) {
         sibling = child_parent->left;
-      else
+      } else {
         sibling = child_parent->right;
+      }
     } else
       go_up = 0;
   }
 
   if (child_parent->color == rbtree_color_red && sibling->color == rbtree_color_black && sibling->left->color == rbtree_color_black && sibling->right->color == rbtree_color_black) {
     /* move red to sibling to rebalance */
-    if (sibling != NULL)
+    if (sibling != NULL) {
       sibling->color = rbtree_color_red;
+    }
     child_parent->color = rbtree_color_black;
     return;
   }
@@ -242,19 +249,21 @@ void rbtree_delete_fixup(rbtree_t *rbtree, rbtree_entry_t *child, rbtree_entry_t
     sibling->right->color = rbtree_color_black;
     rbtree_rotate_left(rbtree, sibling);
     /* new sibling after rotation */
-    if (child_parent->right == child)
+    if (child_parent->right == child) {
       sibling = child_parent->left;
-    else
+    } else {
       sibling = child_parent->right;
+    }
   } else if (child_parent->left == child && sibling->color == rbtree_color_black && sibling->left->color == rbtree_color_red && sibling->right->color == rbtree_color_black) {
     sibling->color = rbtree_color_red;
     sibling->left->color = rbtree_color_black;
     rbtree_rotate_right(rbtree, sibling);
     /* new sibling after rotation */
-    if (child_parent->right == child)
+    if (child_parent->right == child) {
       sibling = child_parent->left;
-    else
+    } else {
       sibling = child_parent->right;
+    }
   }
 
   /* now we have a black sibling with a red child. rotate and exchange colors. */
@@ -270,10 +279,12 @@ void rbtree_delete_fixup(rbtree_t *rbtree, rbtree_entry_t *child, rbtree_entry_t
 }
 
 void change_child_ptr(rbtree_entry_t *child, rbtree_entry_t *old, rbtree_entry_t *new) {
-  if (child == NULL)
+  if (child == NULL) {
     return;
-  if (child->parent == old)
+  }
+  if (child->parent == old) {
     child->parent = new;
+  }
 }
 
 int rbtree_find_less_equal(rbtree_t *rbtree, const char *key, rbtree_entry_t **result) {
@@ -337,21 +348,25 @@ void swap_np(rbtree_entry_t **x, rbtree_entry_t **y) {
 
 void change_parent_ptr(rbtree_t *rbtree, rbtree_entry_t *parent, rbtree_entry_t *old, rbtree_entry_t *new) {
   if (parent == NULL) {
-    if (rbtree->root == old)
+    if (rbtree->root == old) {
       rbtree->root = new;
+    }
     return;
   }
-  if (parent->left == old)
+  if (parent->left == old) {
     parent->left = new;
-  if (parent->right == old)
+  }
+  if (parent->right == old) {
     parent->right = new;
+  }
 }
 
 rbtree_entry_t *rbtree_delete(rbtree_t *rbtree, const char *key) {
   rbtree_entry_t *to_delete;
   rbtree_entry_t *child;
-  if ((to_delete = rbtree_search(rbtree, key)) == 0)
+  if ((to_delete = rbtree_search(rbtree, key)) == 0) {
     return 0;
+  }
   rbtree->count--;
 
   /* make sure we have at most one non-leaf child */
@@ -395,24 +410,26 @@ rbtree_entry_t *rbtree_delete(rbtree_t *rbtree, const char *key) {
     /* now delete to_delete (which is at the location where the smright previously was) */
   }
 
-  if (to_delete->left != NULL)
+  if (to_delete->left != NULL) {
     child = to_delete->left;
-  else
+  } else {
     child = to_delete->right;
-
+  }
   /* unlink to_delete from the tree, replace to_delete with child */
   change_parent_ptr(rbtree, to_delete->parent, to_delete, child);
   change_child_ptr(child, to_delete, to_delete->parent);
-
   if (to_delete->color == rbtree_color_red) {
     /* if node is red then the child (black) can be swapped in */
-  } else if (child->color == rbtree_color_red) {
+  } else if (child != NULL && child->color == rbtree_color_red) {
     /* change child to BLACK, removing a RED node is no problem */
-    if (child != NULL)
+    if (child != NULL) {
       child->color = rbtree_color_black;
-  } else
+    }
+  } else if (to_delete->color == rbtree_color_black && to_delete->parent == NULL) {
+    rbtree->root = NULL;
+  } else {
     rbtree_delete_fixup(rbtree, child, to_delete->parent);
-
+  }
   /* unlink completely */
   to_delete->parent = NULL;
   to_delete->left = NULL;
