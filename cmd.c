@@ -36,10 +36,10 @@ void clear() {
   if (sklist != NULL) {
     slFree(sklist);
   }
-  // if (rbtree != NULL) {
-  //   rbtree_free(rbtree);
-  // }
-  printf("clear all, bye\n");
+  if (rbtree != NULL) {
+    rbtree_free(rbtree);
+  }
+  printf("\nclear all, bye\n");
 }
 
 bool command_rbtree(commands_t commands, int commands_length) {

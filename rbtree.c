@@ -417,3 +417,20 @@ rbtree_entry_t *rbtree_delete(rbtree_t *rbtree, const char *key) {
   to_delete->color = rbtree_color_black;
   return to_delete;
 }
+
+void rbtree_entry_free(rbtree_entry_t *entry) {
+  if (entry != NULL) {
+    rbtree_entry_free(entry->left);
+    rbtree_entry_free(entry->right);
+
+    free(entry->key);
+    free(entry->value);
+    free(entry);
+  }
+}
+
+void rbtree_free(rbtree_t *rbtree) {
+  if (rbtree->root != NULL) {
+    rbtree_entry_free(rbtree->root);
+  }
+}
