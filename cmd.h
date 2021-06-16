@@ -6,6 +6,7 @@
 #include <avl.h>
 #include <cmddefine.h>
 #include <command.h>
+#include <deque.h>
 #include <hashmap.h>
 #include <lru.h>
 #include <rbtree.h>
@@ -38,3 +39,4 @@ bool command_lru(commands_t commands, int commands_length);
 bool command_avl(commands_t commands, int commands_length);
 bool command_sklist(commands_t commands, int commands_length);
 bool command_rbtree(commands_t commands, int commands_length);
+bool command_deque(commands_t commands, int commands_length);

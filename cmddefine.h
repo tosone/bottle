@@ -40,6 +40,13 @@
 #define COMMAND_RBTREE_DUMP "dump"
 #define COMMAND_RBTREE_DEL "del"
 
+#define COMMAND_DEQUE "deque"
+#define COMMAND_DEQUE_BACK "back"
+#define COMMAND_DEQUE_FRONT "front"
+#define COMMAND_DEQUE_PUSH "push"
+#define COMMAND_DEQUE_POP "pop"
+#define COMMAND_DEQUE_DUMP "dump"
+
 #define COMMAND_SKLIST "sklist"
 #define COMMAND_SKLIST_SET "set"
 #define COMMAND_SKLIST_GET "get"

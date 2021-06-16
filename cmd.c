@@ -22,6 +22,7 @@ LRU *lru;
 avl_entry_t *avl;
 skiplist *sklist;
 rbtree_t *rbtree;
+deque_t *deque;
 
 void clear() {
   if (hmap != NULL) {
@@ -40,6 +41,45 @@ void clear() {
     rbtree_free(rbtree);
   }
   printf("\nclear all, bye\n");
+}
+
+bool command_deque(commands_t commands, int commands_length) {
+  if (deque == NULL) {
+    deque = deque_create();
+  }
+  command_length_check(<, 3);
+  if (strncasecmp(commands[1], COMMAND_DEQUE_PUSH, strlen(COMMAND_DEQUE_PUSH)) == 0 && strncasecmp(commands[2], COMMAND_DEQUE_BACK, strlen(COMMAND_DEQUE_BACK)) == 0) {
+    char *data = commands[3];
+    deque_push_back(deque, (void *)data, strlen(data) + 1);
+  } else if (strncasecmp(commands[1], COMMAND_DEQUE_POP, strlen(COMMAND_DEQUE_POP)) == 0 && strncasecmp(commands[2], COMMAND_DEQUE_BACK, strlen(COMMAND_DEQUE_BACK)) == 0) {
+    deque_entry_t *entry = deque_pop_back(deque);
+    if (entry != NULL) {
+      printf("%s\n", (char *)entry->data);
+    } else {
+      printf("deque is null");
+    }
+    free(entry->data);
+    free(entry);
+  } else if (strncasecmp(commands[1], COMMAND_DEQUE_PUSH, strlen(COMMAND_DEQUE_PUSH)) == 0 && strncasecmp(commands[2], COMMAND_DEQUE_FRONT, strlen(COMMAND_DEQUE_FRONT)) == 0) {
+    char *data = commands[3];
+    deque_push_front(deque, (void *)data, strlen(data) + 1);
+  } else if (strncasecmp(commands[1], COMMAND_DEQUE_POP, strlen(COMMAND_DEQUE_POP)) == 0 && strncasecmp(commands[2], COMMAND_DEQUE_FRONT, strlen(COMMAND_DEQUE_FRONT)) == 0) {
+    deque_entry_t *entry = deque_pop_front(deque);
+    if (entry != NULL) {
+      printf("%s\n", (char *)entry->data);
+    } else {
+      printf("deque is null");
+    }
+    free(entry->data);
+    free(entry);
+  } else if (strncasecmp(commands[1], COMMAND_DEQUE_DUMP, strlen(COMMAND_DEQUE_DUMP)) == 0) {
+    command_length_check(!=, 3);
+    char *filename = commands[2];
+    deque_dump(deque, filename);
+  } else {
+    return MAP_COMMANDS_ERROR;
+  }
+  return MAP_COMMANDS_OK;
 }
 
 bool command_rbtree(commands_t commands, int commands_length) {
