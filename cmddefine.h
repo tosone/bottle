@@ -47,6 +47,11 @@
 #define COMMAND_DEQUE_POP "pop"
 #define COMMAND_DEQUE_DUMP "dump"
 
+#define COMMAND_STACK "stack"
+#define COMMAND_STACK_PUSH "push"
+#define COMMAND_STACK_POP "pop"
+#define COMMAND_STACK_DUMP "dump"
+
 #define COMMAND_SKLIST "sklist"
 #define COMMAND_SKLIST_SET "set"
 #define COMMAND_SKLIST_GET "get"

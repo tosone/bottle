@@ -11,6 +11,7 @@
 #include <lru.h>
 #include <rbtree.h>
 #include <skiplist.h>
+#include <stack.h>
 
 #include <pi.h>
 
@@ -40,3 +41,4 @@ bool command_avl(commands_t commands, int commands_length);
 bool command_sklist(commands_t commands, int commands_length);
 bool command_rbtree(commands_t commands, int commands_length);
 bool command_deque(commands_t commands, int commands_length);
+bool command_stack(commands_t commands, int commands_length);

@@ -23,6 +23,7 @@ avl_entry_t *avl;
 skiplist *sklist;
 rbtree_t *rbtree;
 deque_t *deque;
+xstack_t *stack;
 
 void clear() {
   if (hmap != NULL) {
@@ -40,7 +41,39 @@ void clear() {
   if (rbtree != NULL) {
     rbtree_free(rbtree);
   }
+  if (stack != NULL) {
+    stack_free(stack);
+  }
   printf("\nclear all, bye\n");
+}
+
+bool command_stack(commands_t commands, int commands_length) {
+  if (stack == NULL) {
+    stack = stack_create();
+  }
+
+  if (strncasecmp(commands[1], COMMAND_STACK_PUSH, strlen(COMMAND_STACK_PUSH)) == 0) {
+    command_length_check(!=, 3);
+    char *data = commands[2];
+    stack_push(stack, (void *)data, strlen(data) + 1);
+  } else if (strncasecmp(commands[1], COMMAND_STACK_POP, strlen(COMMAND_STACK_POP)) == 0) {
+    command_length_check(!=, 2);
+    stack_entry_t *entry = stack_pop(stack);
+    if (entry != NULL) {
+      printf("%s\n", (char *)entry->data);
+      free(entry->data);
+      free(entry);
+    } else {
+      printf("stack is null\n");
+    }
+  } else if (strncasecmp(commands[1], COMMAND_STACK_DUMP, strlen(COMMAND_STACK_DUMP)) == 0) {
+    command_length_check(!=, 3);
+    char *filename = commands[2];
+    stack_dump(stack, filename);
+  } else {
+    return MAP_COMMANDS_ERROR;
+  }
+  return MAP_COMMANDS_OK;
 }
 
 bool command_deque(commands_t commands, int commands_length) {
@@ -55,11 +88,11 @@ bool command_deque(commands_t commands, int commands_length) {
     deque_entry_t *entry = deque_pop_back(deque);
     if (entry != NULL) {
       printf("%s\n", (char *)entry->data);
+      free(entry->data);
+      free(entry);
     } else {
-      printf("deque is null");
+      printf("deque is null\n");
     }
-    free(entry->data);
-    free(entry);
   } else if (strncasecmp(commands[1], COMMAND_DEQUE_PUSH, strlen(COMMAND_DEQUE_PUSH)) == 0 && strncasecmp(commands[2], COMMAND_DEQUE_FRONT, strlen(COMMAND_DEQUE_FRONT)) == 0) {
     char *data = commands[3];
     deque_push_front(deque, (void *)data, strlen(data) + 1);
@@ -67,11 +100,11 @@ bool command_deque(commands_t commands, int commands_length) {
     deque_entry_t *entry = deque_pop_front(deque);
     if (entry != NULL) {
       printf("%s\n", (char *)entry->data);
+      free(entry->data);
+      free(entry);
     } else {
-      printf("deque is null");
+      printf("deque is null\n");
     }
-    free(entry->data);
-    free(entry);
   } else if (strncasecmp(commands[1], COMMAND_DEQUE_DUMP, strlen(COMMAND_DEQUE_DUMP)) == 0) {
     command_length_check(!=, 3);
     char *filename = commands[2];
