@@ -4,6 +4,7 @@
 #include <strings.h>
 
 #include <avl.h>
+#include <bloom.h>
 #include <cmddefine.h>
 #include <command.h>
 #include <deque.h>
@@ -42,3 +43,4 @@ bool command_sklist(commands_t commands, int commands_length);
 bool command_rbtree(commands_t commands, int commands_length);
 bool command_deque(commands_t commands, int commands_length);
 bool command_stack(commands_t commands, int commands_length);
+bool command_bloom(commands_t commands, int commands_length);

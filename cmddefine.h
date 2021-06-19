@@ -52,6 +52,10 @@
 #define COMMAND_STACK_POP "pop"
 #define COMMAND_STACK_DUMP "dump"
 
+#define COMMAND_BLOOM "bloom"
+#define COMMAND_BLOOM_PUSH "push"
+#define COMMAND_BLOOM_CHECK "check"
+
 #define COMMAND_SKLIST "sklist"
 #define COMMAND_SKLIST_SET "set"
 #define COMMAND_SKLIST_GET "get"

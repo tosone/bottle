@@ -24,6 +24,7 @@ skiplist *sklist;
 rbtree_t *rbtree;
 deque_t *deque;
 xstack_t *stack;
+bloom_t *bloom;
 
 void clear() {
   if (hmap != NULL) {
@@ -44,7 +45,33 @@ void clear() {
   if (stack != NULL) {
     stack_free(stack);
   }
+  if (bloom != NULL) {
+    bloom_free(bloom);
+  }
   printf("\nclear all, bye\n");
+}
+
+bool command_bloom(commands_t commands, int commands_length) {
+  if (bloom == NULL) {
+    bloom = bloom_create();
+  }
+
+  if (strncasecmp(commands[1], COMMAND_BLOOM_PUSH, strlen(COMMAND_BLOOM_PUSH)) == 0) {
+    command_length_check(!=, 3);
+    char *data = commands[2];
+    bloom_push(bloom, (void *)data, strlen(data) + 1);
+  } else if (strncasecmp(commands[1], COMMAND_BLOOM_CHECK, strlen(COMMAND_BLOOM_CHECK)) == 0) {
+    command_length_check(!=, 3);
+    char *data = commands[2];
+    if (bloom_check(bloom, (void *)data, strlen(data) + 1)) {
+      printf("key is exist\n");
+    } else {
+      printf("key is not exist\n");
+    }
+  } else {
+    return MAP_COMMANDS_ERROR;
+  }
+  return MAP_COMMANDS_OK;
 }
 
 bool command_stack(commands_t commands, int commands_length) {

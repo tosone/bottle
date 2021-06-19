@@ -69,6 +69,8 @@ int main(int argc, char const *argv[]) {
         COMMANDS_CHECK(!command_deque(commands, commands_length));
       } else if (strncasecmp(commands[0], COMMAND_STACK, strlen(COMMAND_STACK)) == 0) {
         COMMANDS_CHECK(!command_stack(commands, commands_length));
+      } else if (strncasecmp(commands[0], COMMAND_BLOOM, strlen(COMMAND_BLOOM)) == 0) {
+        COMMANDS_CHECK(!command_bloom(commands, commands_length));
       } else {
         printf("%s\n", ERR_COMMAND_NOT_FOUND);
       }
