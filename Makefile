@@ -1,13 +1,15 @@
 TARGET    = bottle
 
-CFLAGS   += -Os -std=c99 -Wall -I. -fdata-sections -ffunction-sections -finline-functions
+CFLAGS   += -Os -std=gnu99 -Wall -I. -fdata-sections -ffunction-sections -finline-functions
+CLIBS    += -lm
+
 PREFIX   ?= /usr/local
 
 OBJECTS   = $(patsubst %.c, %.o, $(wildcard *.c))
 
 .PHONY: all
 all: $(OBJECTS)
-	$(CC) -o $(TARGET) $^
+	$(CC) -o $(TARGET) $^ $(CFLAGS) $(CLIBS)
 
 .PHONY: clean
 clean:
