@@ -88,11 +88,11 @@ bool command_dag(commands_t commands, int commands_length) {
       command_length_check(!=, 5);
       char *key = commands[3];
       void *value = commands[4];
-      dag_add_entry(dag, key, value, strlen(value) + 1);
+      dag_entry_add(dag, key, value, strlen(value) + 1);
     } else if (strncasecmp(commands[2], COMMAND_DAG_VERTEX_GET, strlen(COMMAND_DAG_VERTEX_GET)) == 0) {
       command_length_check(!=, 4);
       char *key = commands[3];
-      dag_entry_t *entry = dag_get_entry(dag, key);
+      dag_entry_t *entry = dag_entry_get(dag, key);
       if (entry == NULL) {
         printf("key not found\n");
       } else {
@@ -101,7 +101,7 @@ bool command_dag(commands_t commands, int commands_length) {
     } else if (strncasecmp(commands[2], COMMAND_DAG_VERTEX_DEL, strlen(COMMAND_DAG_VERTEX_DEL)) == 0) {
       command_length_check(!=, 4);
       char *key = commands[3];
-      bool success = dag_del_entry(dag, key);
+      bool success = dag_entry_del(dag, key);
       if (!success) {
         printf("key not found\n");
       } else {
@@ -115,7 +115,7 @@ bool command_dag(commands_t commands, int commands_length) {
       command_length_check(!=, 5);
       char *key_from = commands[3];
       void *key_to = commands[4];
-      dag_add_edge(dag, key_from, key_to);
+      dag_edge_add(dag, key_from, key_to);
     } else {
       return MAP_COMMANDS_ERROR;
     }
