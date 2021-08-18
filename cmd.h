@@ -7,6 +7,7 @@
 #include <bloom.h>
 #include <cmddefine.h>
 #include <command.h>
+#include <dag.h>
 #include <deque.h>
 #include <hashmap.h>
 #include <lru.h>
@@ -44,3 +45,4 @@ bool command_rbtree(commands_t commands, int commands_length);
 bool command_deque(commands_t commands, int commands_length);
 bool command_stack(commands_t commands, int commands_length);
 bool command_bloom(commands_t commands, int commands_length);
+bool command_dag(commands_t commands, int commands_length);

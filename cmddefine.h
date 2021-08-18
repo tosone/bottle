@@ -60,3 +60,9 @@
 #define COMMAND_SKLIST_SET "set"
 #define COMMAND_SKLIST_GET "get"
 #define COMMAND_SKLIST_DEL "del"
+
+#define COMMAND_DAG "dag"
+#define COMMAND_DAG_VERTEX "vertex"
+#define COMMAND_DAG_VERTEX_ADD "add"
+#define COMMAND_DAG_VERTEX_GET "get"
+#define COMMAND_DAG_DEL "del"

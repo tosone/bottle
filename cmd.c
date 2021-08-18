@@ -25,6 +25,7 @@ rbtree_t *rbtree;
 deque_t *deque;
 xstack_t *stack;
 bloom_t *bloom;
+dag_t *dag;
 
 void clear() {
   if (hmap != NULL) {
@@ -48,6 +49,9 @@ void clear() {
   if (bloom != NULL) {
     bloom_free(bloom);
   }
+  if (dag != NULL) {
+    // todo: clear dag
+  }
   printf("\nclear all, bye\n");
 }
 
@@ -67,6 +71,30 @@ bool command_bloom(commands_t commands, int commands_length) {
       printf("key is exist\n");
     } else {
       printf("key is not exist\n");
+    }
+  } else {
+    return MAP_COMMANDS_ERROR;
+  }
+  return MAP_COMMANDS_OK;
+}
+
+bool command_dag(commands_t commands, int commands_length) {
+  if (dag == NULL) {
+    dag = dag_create();
+  }
+
+  if (strncasecmp(commands[1], COMMAND_DAG_VERTEX, strlen(COMMAND_DAG_VERTEX)) == 0) {
+    if (strncasecmp(commands[2], COMMAND_DAG_VERTEX_ADD, strlen(COMMAND_DAG_VERTEX_ADD)) == 0) {
+      command_length_check(!=, 5);
+      char *key = commands[3];
+      void *value = commands[4];
+      dag_add_entry(dag, key, value, strlen(value) + 1);
+    } else if (strncasecmp(commands[2], COMMAND_DAG_VERTEX_GET, strlen(COMMAND_DAG_VERTEX_GET)) == 0) {
+      command_length_check(!=, 4);
+      char *key = commands[3];
+      dag_get_entry(dag, key);
+    } else {
+      return MAP_COMMANDS_ERROR;
     }
   } else {
     return MAP_COMMANDS_ERROR;
