@@ -6,6 +6,16 @@ dag_t *dag_create() {
   return dag;
 }
 
+bool dag_entry_isexist(dag_t *dag, char *key) {
+  bool exist = false;
+  for (int i = 0; i < dag->count; i++) {
+    if (strncasecmp(dag->entries[i].key, key, strlen(key)) == 0) {
+      return true;
+    }
+  }
+  return exist;
+}
+
 dag_entry_t *dag_add_entry(dag_t *dag, char *key, void *value, size_t value_length) {
   dag_entry_t *entry = (dag_entry_t *)malloc(sizeof(dag_entry_t));
   entry->key = (char *)malloc(strlen(key) + 1);
@@ -29,7 +39,11 @@ dag_entry_t *dag_add_entry(dag_t *dag, char *key, void *value, size_t value_leng
 dag_entry_t *dag_get_entry(dag_t *dag, char *key) {
   dag_entry_t *entry = NULL;
   for (int i = 0; i < dag->count; i++) {
-    printf("%s %s\n", dag->entries[i].key, (char *)dag->entries[i].value);
+    if (strncasecmp(dag->entries[i].key, key, strlen(key)) == 0) {
+      entry = dag->entries + i;
+      break;
+    }
+    // printf("%s %s\n", dag->entries[i].key, (char *)dag->entries[i].value);
   }
   return entry;
 }

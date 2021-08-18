@@ -92,7 +92,12 @@ bool command_dag(commands_t commands, int commands_length) {
     } else if (strncasecmp(commands[2], COMMAND_DAG_VERTEX_GET, strlen(COMMAND_DAG_VERTEX_GET)) == 0) {
       command_length_check(!=, 4);
       char *key = commands[3];
-      dag_get_entry(dag, key);
+      dag_entry_t *entry = dag_get_entry(dag, key);
+      if (entry == NULL) {
+        printf("key not found");
+      } else {
+        printf("%s\n", (char *)entry->value);
+      }
     } else {
       return MAP_COMMANDS_ERROR;
     }
