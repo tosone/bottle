@@ -19,6 +19,7 @@ typedef struct dag_t {
 dag_t *dag_create();
 dag_entry_t *dag_add_entry(dag_t *dag, char *key, void *value, size_t value_length);
 dag_entry_t *dag_get_entry(dag_t *dag, char *key);
+bool dag_del_entry(dag_t *dag, char *key);
 bool dag_add_edge(dag_t *dag, char *from, char *to);
 dag_entry_t *dag_delete_entry(dag_t *dag, char *key);
 bool dag_delete_edge(dag_t *dag, char *from, char *to);

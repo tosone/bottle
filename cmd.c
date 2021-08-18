@@ -94,9 +94,18 @@ bool command_dag(commands_t commands, int commands_length) {
       char *key = commands[3];
       dag_entry_t *entry = dag_get_entry(dag, key);
       if (entry == NULL) {
-        printf("key not found");
+        printf("key not found\n");
       } else {
         printf("%s\n", (char *)entry->value);
+      }
+    } else if (strncasecmp(commands[2], COMMAND_DAG_VERTEX_DEL, strlen(COMMAND_DAG_VERTEX_DEL)) == 0) {
+      command_length_check(!=, 4);
+      char *key = commands[3];
+      bool success = dag_del_entry(dag, key);
+      if (!success) {
+        printf("key not found\n");
+      } else {
+        printf("key has been deleted\n");
       }
     } else {
       return MAP_COMMANDS_ERROR;
