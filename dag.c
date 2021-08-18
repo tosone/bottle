@@ -21,6 +21,10 @@ dag_entry_t *dag_add_entry(dag_t *dag, char *key, void *value, size_t value_leng
   entry->key = (char *)malloc(strlen(key) + 1);
   entry->value = (void *)malloc(value_length);
   entry->value_length = value_length;
+  entry->children_length = 0;
+  entry->parents_length = 0;
+  entry->children = NULL;
+  entry->parents = NULL;
 
   strcpy(entry->key, key);
   memcpy(entry->value, value, value_length);
@@ -69,5 +73,54 @@ bool dag_del_entry(dag_t *dag, char *key) {
   free(dag->entries);
   dag->entries = entries;
   dag->count = new_count;
+  return true;
+}
+
+bool dag_check_edge_isexist(dag_entry_t *from, dag_entry_t *to) {
+  bool from_edge = false;
+  bool to_edge = false;
+  for (int i = 0; i < from->children_length; i++) {
+    if (from->children[i] == to) {
+      from_edge = true;
+    }
+  }
+  for (int i = 0; i < to->parents_length; i++) {
+    if (to->parents[i] == from) {
+      to_edge = true;
+    }
+  }
+  if (from_edge && to_edge) {
+    return true;
+  }
+  return false;
+}
+
+bool dag_add_edge(dag_t *dag, char *from, char *to) {
+  if (!dag_entry_isexist(dag, from) || !dag_entry_isexist(dag, to)) {
+    printf("key not found\n");
+    return false;
+  }
+  dag_entry_t *from_entry = dag_get_entry(dag, from);
+  dag_entry_t *to_entry = dag_get_entry(dag, to);
+  if (dag_check_edge_isexist(from_entry, to_entry)) {
+    printf("edge already exist\n");
+    return false;
+  }
+  from_entry->children_length++;
+  if (from_entry->children == NULL) {
+    from_entry->children = (dag_entry_t **)malloc(sizeof(dag_entry_t *) * from_entry->children_length);
+    from_entry->children[from_entry->children_length - 1] = to_entry;
+  } else {
+    from_entry->children = (dag_entry_t **)realloc(from_entry->children, sizeof(dag_entry_t *) * from_entry->children_length);
+    from_entry->children[from_entry->children_length - 1] = to_entry;
+  }
+  to_entry->parents_length++;
+  if (to_entry->parents == NULL) {
+    to_entry->parents = (dag_entry_t **)malloc(sizeof(dag_entry_t *) * to_entry->parents_length);
+    to_entry->parents[to_entry->parents_length - 1] = from_entry;
+  } else {
+    to_entry->parents = (dag_entry_t **)realloc(to_entry->parents, sizeof(dag_entry_t *) * to_entry->parents_length);
+    to_entry->parents[to_entry->parents_length - 1] = from_entry;
+  }
   return true;
 }

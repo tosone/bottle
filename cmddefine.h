@@ -66,4 +66,6 @@
 #define COMMAND_DAG_VERTEX_ADD "add"
 #define COMMAND_DAG_VERTEX_GET "get"
 #define COMMAND_DAG_VERTEX_DEL "del"
-#define COMMAND_DAG_DEL "del"
+#define COMMAND_DAG_EDGE "edge"
+#define COMMAND_DAG_EDGE_ADD "add"
+#define COMMAND_DAG_EDGE_DEL "del"

@@ -8,7 +8,10 @@ typedef struct dag_entry_t {
   char *key;
   void *value;
   size_t value_length;
-  struct dag_entry_t **nexts;
+  struct dag_entry_t **children;
+  uint64_t children_length;
+  struct dag_entry_t **parents;
+  uint64_t parents_length;
 } dag_entry_t;
 
 typedef struct dag_t {
