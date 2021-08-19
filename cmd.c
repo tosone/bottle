@@ -119,6 +119,8 @@ bool command_dag(commands_t commands, int commands_length) {
     } else {
       return MAP_COMMANDS_ERROR;
     }
+  } else if (strncasecmp(commands[1], COMMAND_DAG_RANGE, strlen(COMMAND_DAG_RANGE)) == 0) {
+    dag_range(dag);
   } else {
     return MAP_COMMANDS_ERROR;
   }
