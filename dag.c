@@ -4,7 +4,19 @@ dag_t *dag_create() {
   dag_t *dag = (dag_t *)malloc(sizeof(dag_t));
   dag->vertexes = NULL;
   dag->vertex_count = 0;
+  dag->edge_count = 0;
   return dag;
+}
+
+void dag_free(dag_t *dag) {
+  for (int i = 0; i < dag->vertex_count; i++) {
+    free(dag->vertexes[i].children);
+    free(dag->vertexes[i].parents);
+    free(dag->vertexes[i].key);
+    free(dag->vertexes[i].value);
+  }
+  free(dag->vertexes);
+  free(dag);
 }
 
 bool dag_entry_isexist(dag_t *dag, char *key) {
@@ -108,6 +120,9 @@ bool dag_edge_add(dag_t *dag, char *from, char *to) {
     printf("edge already exist\n");
     return false;
   }
+
+  dag->edge_count++;
+
   from_entry->children_length++;
   if (from_entry->children == NULL) {
     from_entry->children = (dag_vertex_t **)malloc(sizeof(dag_vertex_t *) * from_entry->children_length);
@@ -130,6 +145,7 @@ bool dag_edge_add(dag_t *dag, char *from, char *to) {
 dag_t *dag_duplicate(dag_t *dag) {
   dag_t *new_dag = (dag_t *)malloc(sizeof(dag_t));
   new_dag->vertex_count = 0;
+  new_dag->edge_count = 0;
   new_dag->vertexes = NULL;
   for (int i = 0; i < dag->vertex_count; i++) {
     new_dag->vertex_count++;
@@ -181,10 +197,22 @@ dag_t *dag_duplicate(dag_t *dag) {
 
 void dag_range(dag_t *dag) {
   dag_t *new_dag = dag_duplicate(dag);
+  for (int i = 0; i < dag->vertex_count; i++) {
+    printf("node: %s \n", dag->vertexes[i].key);
+    for (int j = 0; j < dag->vertexes[i].children_length; j++) {
+      printf("children: %s \n", dag->vertexes[i].children[j]->key);
+    }
+    for (int j = 0; j < dag->vertexes[i].parents_length; j++) {
+      printf("parents: %s \n", dag->vertexes[i].parents[j]->key);
+    }
+  }
   for (int i = 0; i < new_dag->vertex_count; i++) {
-    printf("%s \n", new_dag->vertexes[i].key);
+    printf("node: %s \n", new_dag->vertexes[i].key);
     for (int j = 0; j < new_dag->vertexes[i].children_length; j++) {
-      printf("186: %s \n", new_dag->vertexes[i].children[i]->key);
+      printf("children: %s \n", new_dag->vertexes[i].children[j]->key);
+    }
+    for (int j = 0; j < new_dag->vertexes[i].parents_length; j++) {
+      printf("parents: %s \n", new_dag->vertexes[i].parents[j]->key);
     }
   }
   return;

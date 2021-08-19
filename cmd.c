@@ -50,7 +50,7 @@ void clear() {
     bloom_free(bloom);
   }
   if (dag != NULL) {
-    // todo: clear dag
+    dag_free(dag);
   }
   printf("\nclear all, bye\n");
 }
@@ -92,11 +92,11 @@ bool command_dag(commands_t commands, int commands_length) {
     } else if (strncasecmp(commands[2], COMMAND_DAG_VERTEX_GET, strlen(COMMAND_DAG_VERTEX_GET)) == 0) {
       command_length_check(!=, 4);
       char *key = commands[3];
-      dag_entry_t *entry = dag_entry_get(dag, key);
-      if (entry == NULL) {
+      dag_vertex_t *vertex = dag_entry_get(dag, key);
+      if (vertex == NULL) {
         printf("key not found\n");
       } else {
-        printf("%s\n", (char *)entry->value);
+        printf("%s\n", (char *)vertex->value);
       }
     } else if (strncasecmp(commands[2], COMMAND_DAG_VERTEX_DEL, strlen(COMMAND_DAG_VERTEX_DEL)) == 0) {
       command_length_check(!=, 4);
