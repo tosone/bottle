@@ -157,7 +157,9 @@ bool command_dag(commands_t commands, int commands_length) {
 
     printf("> %s %s\n", COMMAND_DAG, COMMAND_DAG_PRINT);
     dag_print(dag);
-    dag_dump(dag, "dag.dot");
+    char *filename = "dag.dot";
+    printf("> %s %s %s\n", COMMAND_DAG, COMMAND_DAG_DUMP, filename);
+    dag_dump(dag, filename);
   } else if (strncasecmp(commands[1], COMMAND_DAG_DUMP, strlen(COMMAND_DAG_DUMP)) == 0) {
     command_length_check(!=, 3);
     char *filename = commands[2];
