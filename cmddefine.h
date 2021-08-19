@@ -62,7 +62,9 @@
 #define COMMAND_SKLIST_DEL "del"
 
 #define COMMAND_DAG "dag"
-#define COMMAND_DAG_RANGE "range"
+#define COMMAND_DAG_DUMP "dump"
+#define COMMAND_DAG_TEST "test"
+#define COMMAND_DAG_PRINT "print"
 #define COMMAND_DAG_VERTEX "vertex"
 #define COMMAND_DAG_VERTEX_ADD "add"
 #define COMMAND_DAG_VERTEX_GET "get"

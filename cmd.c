@@ -124,8 +124,44 @@ bool command_dag(commands_t commands, int commands_length) {
     } else {
       return MAP_COMMANDS_ERROR;
     }
-  } else if (strncasecmp(commands[1], COMMAND_DAG_RANGE, strlen(COMMAND_DAG_RANGE)) == 0) {
-    dag_range(dag);
+  } else if (strncasecmp(commands[1], COMMAND_DAG_PRINT, strlen(COMMAND_DAG_PRINT)) == 0) {
+    dag_print(dag);
+  } else if (strncasecmp(commands[1], COMMAND_DAG_TEST, strlen(COMMAND_DAG_TEST)) == 0) {
+    char *key1 = "a";
+    char *value1 = "1";
+    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key1, value1);
+    dag_entry_add(dag, key1, (void *)value1, strlen(value1) + 1);
+    char *key2 = "b";
+    char *value2 = "2";
+    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key2, value2);
+    dag_entry_add(dag, key2, (void *)value2, strlen(value1) + 1);
+    char *key3 = "c";
+    char *value3 = "3";
+    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key3, value3);
+    dag_entry_add(dag, key3, (void *)value3, strlen(value1) + 1);
+    char *key4 = "d";
+    char *value4 = "4";
+    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key4, value4);
+    dag_entry_add(dag, key4, (void *)value4, strlen(value1) + 1);
+
+    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key1, key2);
+    dag_edge_add(dag, key1, key2);
+    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key2, key3);
+    dag_edge_add(dag, key2, key3);
+    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key1, key4);
+    dag_edge_add(dag, key1, key4);
+    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key4, key3);
+    dag_edge_add(dag, key4, key3);
+    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key2, key4);
+    dag_edge_add(dag, key2, key4);
+
+    printf("> %s %s\n", COMMAND_DAG, COMMAND_DAG_PRINT);
+    dag_print(dag);
+    dag_dump(dag, "dag.dot");
+  } else if (strncasecmp(commands[1], COMMAND_DAG_DUMP, strlen(COMMAND_DAG_DUMP)) == 0) {
+    command_length_check(!=, 3);
+    char *filename = commands[2];
+    dag_dump(dag, filename);
   } else {
     return MAP_COMMANDS_ERROR;
   }

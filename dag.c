@@ -58,7 +58,7 @@ dag_vertex_t *dag_entry_get(dag_t *dag, char *key) {
   dag_vertex_t *entry = NULL;
   for (int i = 0; i < dag->vertex_count; i++) {
     if (strlen(dag->vertexes[i].key) == strlen(key) && strncasecmp(dag->vertexes[i].key, key, strlen(key)) == 0) {
-      entry = dag->vertexes + i;
+      entry = &dag->vertexes[i];
       break;
     }
   }
@@ -71,6 +71,21 @@ bool dag_entry_del(dag_t *dag, char *key) {
   }
   uint64_t new_count = 0;
   dag_vertex_t *vertexes = NULL;
+  dag_vertex_t delete_vertex;
+
+  for (int i = 0; i < dag->vertex_count; i++) {
+    if (strlen(dag->vertexes[i].key) == strlen(key) && strncasecmp(dag->vertexes[i].key, key, strlen(key)) == 0) {
+      delete_vertex = dag->vertexes[i];
+      break;
+    }
+  }
+  for (int i = 0; i < delete_vertex.children_length; i++) {
+    dag_edge_delete(dag, delete_vertex.key, delete_vertex.children[i]->key);
+  }
+  for (int i = 0; i < delete_vertex.parents_length; i++) {
+    dag_edge_delete(dag, delete_vertex.parents[i]->key, delete_vertex.key);
+  }
+
   for (int i = 0; i < dag->vertex_count; i++) {
     if (strlen(dag->vertexes[i].key) == strlen(key) && strncasecmp(dag->vertexes[i].key, key, strlen(key)) == 0) {
       continue;
@@ -84,6 +99,26 @@ bool dag_entry_del(dag_t *dag, char *key) {
       memcpy(vertexes + new_count - 1, dag->vertexes + i, sizeof(dag_vertex_t));
     }
   }
+
+  for (int i = 0; i < new_count; i++) {
+    for (int j = 0; j < vertexes[i].children_length; j++) {
+      for (int k = 0; k < new_count; k++) {
+        if (strlen(vertexes[k].key) == strlen(vertexes[i].children[j]->key) && strncasecmp(vertexes[k].key, vertexes[i].children[j]->key, strlen(vertexes[i].children[j]->key)) == 0) {
+          vertexes[i].children[j] = &vertexes[k];
+        }
+      }
+    }
+    for (int j = 0; j < vertexes[i].parents_length; j++) {
+      for (int k = 0; k < new_count; k++) {
+        if (strlen(vertexes[k].key) == strlen(vertexes[i].parents[j]->key) && strncasecmp(vertexes[k].key, vertexes[i].parents[j]->key, strlen(vertexes[i].parents[j]->key)) == 0) {
+          vertexes[i].parents[j] = &vertexes[k];
+        }
+      }
+    }
+  }
+
+  free(delete_vertex.key);
+  free(delete_vertex.value);
   free(dag->vertexes);
   dag->vertexes = vertexes;
   dag->vertex_count = new_count;
@@ -248,25 +283,79 @@ dag_t *dag_duplicate(dag_t *dag) {
   return new_dag;
 }
 
-void dag_range(dag_t *dag) {
-  dag_t *new_dag = dag_duplicate(dag);
+dag_vertex_t *dag_get_zero_indegree(dag_t *dag) {
   for (int i = 0; i < dag->vertex_count; i++) {
-    printf("node: %s \n", dag->vertexes[i].key);
+    if (dag->vertexes[i].parents_length == 0) {
+      return &dag->vertexes[i];
+    }
+  }
+  return NULL;
+}
+
+void dag_debug(dag_t *dag) {
+  printf("---------------------\n");
+  for (int i = 0; i < dag->vertex_count; i++) {
+    printf("node: %s %p \n", dag->vertexes[i].key, &dag->vertexes[i]);
     for (int j = 0; j < dag->vertexes[i].children_length; j++) {
-      printf("children: %s \n", dag->vertexes[i].children[j]->key);
+      printf("\tchildren: %s %p \n", dag->vertexes[i].children[j]->key, dag->vertexes[i].children[j]);
     }
     for (int j = 0; j < dag->vertexes[i].parents_length; j++) {
-      printf("parents: %s \n", dag->vertexes[i].parents[j]->key);
+      printf("\tparents: %s %p \n", dag->vertexes[i].parents[j]->key, dag->vertexes[i].parents[j]);
     }
   }
-  for (int i = 0; i < new_dag->vertex_count; i++) {
-    printf("node: %s \n", new_dag->vertexes[i].key);
-    for (int j = 0; j < new_dag->vertexes[i].children_length; j++) {
-      printf("children: %s \n", new_dag->vertexes[i].children[j]->key);
-    }
-    for (int j = 0; j < new_dag->vertexes[i].parents_length; j++) {
-      printf("parents: %s \n", new_dag->vertexes[i].parents[j]->key);
-    }
+  printf("---------------------\n");
+}
+
+void dag_print(dag_t *dag) {
+  if (dag->vertex_count == 0) {
+    return;
   }
+  dag_t *new_dag = dag_duplicate(dag);
+
+  bool first = true;
+
+  for (;;) {
+    dag_vertex_t *vertex = dag_get_zero_indegree(new_dag);
+    if (vertex == NULL) {
+      break;
+    }
+    if (!first) {
+      printf(" %s", vertex->key);
+    } else {
+      printf("%s", vertex->key);
+      first = false;
+    }
+    if (vertex->children_length == 0) {
+      break;
+    }
+
+    dag_entry_del(new_dag, vertex->key);
+  }
+  printf("\n");
+
   return;
+}
+
+void dag_dump(dag_t *dag, char *filename) {
+  if (dag == NULL) {
+    printf("dag is null");
+  }
+  FILE *stream = fopen(filename, "w+");
+  fprintf(stream, "graph {\n");
+  if (dag->vertex_count != 0) {
+    for (int i = 0; i < dag->vertex_count; i++) {
+      fprintf(stream, "node%s[shape=record,label=\"{{%s}}\"];\n", dag->vertexes[i].key, (char *)dag->vertexes[i].value);
+      // printf("node: %s %p \n", dag->vertexes[i].key, &dag->vertexes[i]);
+      for (int j = 0; j < dag->vertexes[i].children_length; j++) {
+        // printf("\tchildren: %s %p \n", dag->vertexes[i].children[j]->key, dag->vertexes[i].children[j]);
+        fprintf(stream, "node%s -> node%s;\n", dag->vertexes[i].key, dag->vertexes[i].children[j]->key);
+      }
+      // for (int j = 0; j < dag->vertexes[i].parents_length; j++) {
+      //   printf("\tparents: %s %p \n", dag->vertexes[i].parents[j]->key, dag->vertexes[i].parents[j]);
+      // }
+    }
+    // printf("---------------------\n");
+  }
+  fprintf(stream, "}\n");
+  fclose(stream);
 }
