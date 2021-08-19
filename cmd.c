@@ -116,6 +116,11 @@ bool command_dag(commands_t commands, int commands_length) {
       char *key_from = commands[3];
       void *key_to = commands[4];
       dag_edge_add(dag, key_from, key_to);
+    } else if (strncasecmp(commands[2], COMMAND_DAG_EDGE_DEL, strlen(COMMAND_DAG_EDGE_DEL)) == 0) {
+      command_length_check(!=, 5);
+      char *key_from = commands[3];
+      void *key_to = commands[4];
+      dag_edge_delete(dag, key_from, key_to);
     } else {
       return MAP_COMMANDS_ERROR;
     }

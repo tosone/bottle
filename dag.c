@@ -142,6 +142,59 @@ bool dag_edge_add(dag_t *dag, char *from, char *to) {
   return true;
 }
 
+bool dag_edge_delete(dag_t *dag, char *from, char *to) {
+  if (!dag_entry_isexist(dag, from) || !dag_entry_isexist(dag, to)) {
+    printf("key not found\n");
+    return false;
+  }
+  dag_vertex_t *from_vertex = dag_entry_get(dag, from);
+  dag_vertex_t *to_vertex = dag_entry_get(dag, to);
+  if (!dag_edge_isexist(from_vertex, to_vertex)) {
+    printf("edge not found\n");
+    return false;
+  }
+
+  dag_vertex_t **new_from_vertex_children = NULL;
+  uint64_t new_from_vertex_childred_length = 0;
+  for (uint64_t i = 0; i < from_vertex->children_length; i++) {
+    if (from_vertex->children[i] == to_vertex) {
+      continue;
+    } else {
+      new_from_vertex_childred_length++;
+      if (new_from_vertex_children == NULL) {
+        new_from_vertex_children = (dag_vertex_t **)malloc(sizeof(dag_vertex_t *) * new_from_vertex_childred_length);
+      } else {
+        new_from_vertex_children = (dag_vertex_t **)realloc(new_from_vertex_children, sizeof(dag_vertex_t *) * new_from_vertex_childred_length);
+      }
+      new_from_vertex_children[new_from_vertex_childred_length - 1] = from_vertex->children[i];
+    }
+  }
+  free(from_vertex->children);
+  from_vertex->children = new_from_vertex_children;
+  from_vertex->children_length = new_from_vertex_childred_length;
+
+  dag_vertex_t **new_to_vertex_parents = NULL;
+  uint64_t new_to_vertex_parents_length = 0;
+  for (uint64_t i = 0; i < to_vertex->parents_length; i++) {
+    if (to_vertex->parents[i] == from_vertex) {
+      continue;
+    } else {
+      new_to_vertex_parents_length++;
+      if (new_to_vertex_parents == NULL) {
+        new_to_vertex_parents = (dag_vertex_t **)malloc(sizeof(dag_vertex_t *) * new_to_vertex_parents_length);
+      } else {
+        new_to_vertex_parents = (dag_vertex_t **)realloc(new_to_vertex_parents, sizeof(dag_vertex_t *) * new_to_vertex_parents_length);
+      }
+      new_to_vertex_parents[new_to_vertex_parents_length - 1] = to_vertex->children[i];
+    }
+  }
+  free(to_vertex->parents);
+  to_vertex->parents = new_to_vertex_parents;
+  to_vertex->parents_length = new_to_vertex_parents_length;
+
+  return true;
+}
+
 dag_t *dag_duplicate(dag_t *dag) {
   dag_t *new_dag = (dag_t *)malloc(sizeof(dag_t));
   new_dag->vertex_count = 0;

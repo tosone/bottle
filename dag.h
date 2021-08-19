@@ -25,6 +25,7 @@ dag_vertex_t *dag_entry_add(dag_t *dag, char *key, void *value, size_t value_len
 dag_vertex_t *dag_entry_get(dag_t *dag, char *key);
 bool dag_entry_del(dag_t *dag, char *key);
 bool dag_edge_add(dag_t *dag, char *from, char *to);
+bool dag_edge_delete(dag_t *dag, char *from, char *to);
 dag_vertex_t *dag_delete_entry(dag_t *dag, char *key);
 bool dag_delete_edge(dag_t *dag, char *from, char *to);
 void dag_dump(dag_t *dag);
