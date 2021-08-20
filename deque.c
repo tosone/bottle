@@ -8,6 +8,18 @@ deque_t *deque_create() {
   return deque;
 }
 
+void deque_free(deque_t *deque) {
+  while (true) {
+    deque_entry_t *entry = deque_pop_back(deque);
+    if (entry == NULL) {
+      break;
+    }
+    free(entry->data);
+    free(entry);
+  }
+  free(deque);
+}
+
 void deque_push_back(deque_t *deque, void *data, size_t data_length) {
   deque_entry_t *entry = (deque_entry_t *)malloc(sizeof(deque_entry_t));
   entry->data = (void *)malloc(data_length);
@@ -48,10 +60,13 @@ deque_entry_t *deque_pop_back(deque_t *deque) {
   if (deque->tail == NULL) {
     return NULL;
   }
+  // printf("64: %d\n", deque->count);
   deque->count--;
+  // printf("65: test equal: %p %p %zu\n", deque->tail, deque->head, deque->count);
   if (deque->tail == deque->head) {
     deque_entry_t *entry = deque->tail;
-    deque->head = deque->tail = NULL;
+    deque->head = NULL;
+    deque->tail = NULL;
     return entry;
   }
   deque_entry_t *entry = deque->tail;
@@ -81,7 +96,10 @@ size_t deque_size(deque_t *deque) { return deque->count; }
 void deque_dump_helper(deque_entry_t *entry, FILE *stream, size_t index) {
   if (entry != NULL) {
     fprintf(stream, "node%zu [shape=record,label=\"{{%s}}\"];\n", index, (char *)entry->data);
+  } else {
+    return;
   }
+  printf("\n");
   if (entry->next != NULL) {
     size_t new_index = index + 1;
     fprintf(stream, "node%zu -- node%zu;\n", index, new_index);
@@ -97,7 +115,7 @@ void deque_dump(deque_t *deque, char *filename) {
   fclose(stream);
 }
 
-deque_entry_t *deque_entry_search(deque_t *deque, bool (*callback)(void *data, size_t data_length)) {
+deque_entry_t *deque_entry_get(deque_t *deque, bool (*callback)(deque_t *, void *, size_t)) {
   deque_entry_t *result = NULL;
   if (deque == NULL || deque->head == NULL) {
     return result;
@@ -105,7 +123,7 @@ deque_entry_t *deque_entry_search(deque_t *deque, bool (*callback)(void *data, s
 
   deque_entry_t *ans = deque->head;
   while (ans != NULL) {
-    if (callback(ans->data, ans->data_length)) {
+    if (callback(deque, ans->data, ans->data_length)) {
       return ans;
     }
     ans = ans->next;
@@ -113,22 +131,52 @@ deque_entry_t *deque_entry_search(deque_t *deque, bool (*callback)(void *data, s
   return result;
 }
 
-bool deque_entry_delete(deque_t *deque, bool (*callback)(void *data, size_t data_length)) {
-  deque_entry_t *result = deque_entry_search(deque, callback);
+bool deque_entry_delete(deque_t *deque, bool (*callback)(deque_t *, void *, size_t)) {
+  deque_entry_t *result = deque_entry_get(deque, callback);
   if (result == NULL) {
     return false;
   }
+  deque->count--;
   if (result->prev != NULL) {
     result->prev->next = result->next;
   }
   if (result->next != NULL) {
     result->next->prev = result->prev;
   }
-
+  if (deque->head == result) {
+    deque->head = result->next;
+  }
+  if (deque->tail == result) {
+    deque->tail = result->prev;
+  }
   return true;
 }
 
-bool deque_test_callback(void *data, size_t data_length) {
+deque_t *deque_duplicate(deque_t *deque) {
+  if (deque == NULL) {
+    return NULL;
+  }
+  deque_t *new_deque = (deque_t *)malloc(sizeof(deque_t));
+  deque_entry_t *entry = deque->head;
+  while (entry != NULL) {
+    void *data = (void *)malloc(entry->data_length);
+    memcpy(data, entry->data, entry->data_length);
+    deque_push_back(new_deque, data, entry->data_length);
+    entry = entry->next;
+  }
+  return new_deque;
+}
+
+void deque_debug(deque_t *deque) {
+  deque_entry_t *ans = deque->head;
+  printf("deque head: %p tail: %p\n", deque->head, deque->tail);
+  while (ans != NULL) {
+    printf("deque node: %p\n", ans);
+    ans = ans->next;
+  }
+}
+
+bool deque_test_callback(deque_t *deque, void *data, size_t data_length) {
   if (strcmp((char *)data, "key_search") == 0) {
     return true;
   }

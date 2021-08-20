@@ -6,6 +6,8 @@
 
 #include <cmddefine.h>
 
+#include <deque.h>
+
 typedef struct dag_vertex_t {
   char *key;
   void *value;
@@ -14,12 +16,16 @@ typedef struct dag_vertex_t {
   uint64_t children_length;
   struct dag_vertex_t **parents;
   uint64_t parents_length;
+
+  deque_t *children_new;
+  deque_t *parents_new;
 } dag_vertex_t;
 
 typedef struct dag_t {
   dag_vertex_t *vertexes;
   uint64_t vertex_count;
   uint64_t edge_count;
+  deque_t *vertexes_new;
 } dag_t;
 
 dag_t *dag_create();
