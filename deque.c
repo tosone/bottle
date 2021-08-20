@@ -96,3 +96,66 @@ void deque_dump(deque_t *deque, char *filename) {
   fprintf(stream, "}\n");
   fclose(stream);
 }
+
+deque_entry_t *deque_entry_search(deque_t *deque, bool (*callback)(void *data, size_t data_length)) {
+  deque_entry_t *result = NULL;
+  if (deque == NULL || deque->head == NULL) {
+    return result;
+  }
+
+  deque_entry_t *ans = deque->head;
+  while (ans != NULL) {
+    if (callback(ans->data, ans->data_length)) {
+      return ans;
+    }
+    ans = ans->next;
+  }
+  return result;
+}
+
+bool deque_entry_delete(deque_t *deque, bool (*callback)(void *data, size_t data_length)) {
+  deque_entry_t *result = deque_entry_search(deque, callback);
+  if (result == NULL) {
+    return false;
+  }
+  if (result->prev != NULL) {
+    result->prev->next = result->next;
+  }
+  if (result->next != NULL) {
+    result->next->prev = result->prev;
+  }
+
+  return true;
+}
+
+bool deque_test_callback(void *data, size_t data_length) {
+  if (strcmp((char *)data, "key_search") == 0) {
+    return true;
+  }
+  return false;
+}
+
+void deque_test(deque_t *deque) {
+  char *key1 = "test001";
+  printf("> %s %s %s %s\n", COMMAND_DEQUE, COMMAND_DEQUE_PUSH, COMMAND_DEQUE_BACK, key1);
+  deque_push_back(deque, (void *)key1, strlen(key1) + 1);
+  char *key2 = "test002";
+  printf("> %s %s %s %s\n", COMMAND_DEQUE, COMMAND_DEQUE_PUSH, COMMAND_DEQUE_BACK, key2);
+  deque_push_back(deque, (void *)key2, strlen(key2) + 1);
+  char *key3 = "test003";
+  printf("> %s %s %s %s\n", COMMAND_DEQUE, COMMAND_DEQUE_PUSH, COMMAND_DEQUE_BACK, key3);
+  deque_push_front(deque, (void *)key3, strlen(key3) + 1);
+  char *key4 = "test004";
+  printf("> %s %s %s %s\n", COMMAND_DEQUE, COMMAND_DEQUE_PUSH, COMMAND_DEQUE_FRONT, key4);
+  deque_push_front(deque, (void *)key4, strlen(key4) + 1);
+
+  bool result = deque_entry_delete(deque, deque_test_callback);
+  assert(result == false);
+
+  char *key5 = "key_search";
+  printf("> %s %s %s %s\n", COMMAND_DEQUE, COMMAND_DEQUE_PUSH, COMMAND_DEQUE_BACK, key5);
+  deque_push_front(deque, (void *)key5, strlen(key5) + 1);
+
+  result = deque_entry_delete(deque, deque_test_callback);
+  assert(result == true);
+}

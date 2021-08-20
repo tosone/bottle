@@ -203,35 +203,47 @@ bool command_deque(commands_t commands, int commands_length) {
   if (deque == NULL) {
     deque = deque_create();
   }
-  command_length_check(<, 3);
-  if (strncasecmp(commands[1], COMMAND_DEQUE_PUSH, strlen(COMMAND_DEQUE_PUSH)) == 0 && strncasecmp(commands[2], COMMAND_DEQUE_BACK, strlen(COMMAND_DEQUE_BACK)) == 0) {
-    char *data = commands[3];
-    deque_push_back(deque, (void *)data, strlen(data) + 1);
-  } else if (strncasecmp(commands[1], COMMAND_DEQUE_POP, strlen(COMMAND_DEQUE_POP)) == 0 && strncasecmp(commands[2], COMMAND_DEQUE_BACK, strlen(COMMAND_DEQUE_BACK)) == 0) {
-    deque_entry_t *entry = deque_pop_back(deque);
-    if (entry != NULL) {
-      printf("%s\n", (char *)entry->data);
-      free(entry->data);
-      free(entry);
+  if (strequal(commands[1], COMMAND_DEQUE_PUSH)) {
+    command_length_check(!=, 4);
+    if (strequal(commands[2], COMMAND_DEQUE_BACK)) {
+      char *data = commands[3];
+      deque_push_back(deque, (void *)data, strlen(data) + 1);
+    } else if (strequal(commands[2], COMMAND_DEQUE_FRONT)) {
+      char *data = commands[3];
+      deque_push_front(deque, (void *)data, strlen(data) + 1);
     } else {
-      printf("deque is null\n");
+      return MAP_COMMANDS_ERROR;
     }
-  } else if (strncasecmp(commands[1], COMMAND_DEQUE_PUSH, strlen(COMMAND_DEQUE_PUSH)) == 0 && strncasecmp(commands[2], COMMAND_DEQUE_FRONT, strlen(COMMAND_DEQUE_FRONT)) == 0) {
-    char *data = commands[3];
-    deque_push_front(deque, (void *)data, strlen(data) + 1);
-  } else if (strncasecmp(commands[1], COMMAND_DEQUE_POP, strlen(COMMAND_DEQUE_POP)) == 0 && strncasecmp(commands[2], COMMAND_DEQUE_FRONT, strlen(COMMAND_DEQUE_FRONT)) == 0) {
-    deque_entry_t *entry = deque_pop_front(deque);
-    if (entry != NULL) {
-      printf("%s\n", (char *)entry->data);
-      free(entry->data);
-      free(entry);
+  } else if (strequal(commands[1], COMMAND_DEQUE_POP)) {
+    command_length_check(!=, 3);
+    if (strequal(commands[2], COMMAND_DEQUE_BACK)) {
+      deque_entry_t *entry = deque_pop_back(deque);
+      if (entry != NULL) {
+        printf("%s\n", (char *)entry->data);
+        free(entry->data);
+        free(entry);
+      } else {
+        printf("deque is null\n");
+      }
+    } else if (strequal(commands[2], COMMAND_DEQUE_FRONT)) {
+      deque_entry_t *entry = deque_pop_front(deque);
+      if (entry != NULL) {
+        printf("%s\n", (char *)entry->data);
+        free(entry->data);
+        free(entry);
+      } else {
+        printf("deque is null\n");
+      }
     } else {
-      printf("deque is null\n");
+      return MAP_COMMANDS_ERROR;
     }
-  } else if (strncasecmp(commands[1], COMMAND_DEQUE_DUMP, strlen(COMMAND_DEQUE_DUMP)) == 0) {
+  } else if (strequal(commands[1], COMMAND_DEQUE_DUMP)) {
     command_length_check(!=, 3);
     char *filename = commands[2];
     deque_dump(deque, filename);
+  } else if (strequal(commands[1], COMMAND_DEQUE_TEST)) {
+    command_length_check(!=, 2);
+    deque_test(deque);
   } else {
     return MAP_COMMANDS_ERROR;
   }

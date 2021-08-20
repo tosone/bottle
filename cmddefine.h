@@ -41,6 +41,8 @@
 #define COMMAND_RBTREE_DEL "del"
 
 #define COMMAND_DEQUE "deque"
+#define COMMAND_DEQUE_TEST "test"
+#define COMMAND_DEQUE_DEL "del"
 #define COMMAND_DEQUE_BACK "back"
 #define COMMAND_DEQUE_FRONT "front"
 #define COMMAND_DEQUE_PUSH "push"

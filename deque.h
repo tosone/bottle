@@ -1,6 +1,12 @@
+#include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <cmddefine.h>
+
+#pragma once
 
 typedef struct deque_entry_t {
   struct deque_entry_t *prev;
@@ -23,3 +29,6 @@ deque_entry_t *deque_pop_back(deque_t *deque);
 void deque_push_front(deque_t *deque, void *data, size_t data_length);
 deque_entry_t *deque_pop_front(deque_t *deque);
 void deque_dump(deque_t *deque, char *filename);
+deque_entry_t *deque_entry_search(deque_t *deque, bool (*callback)(void *data, size_t data_length));
+bool deque_entry_delete(deque_t *deque, bool (*callback)(void *data, size_t data_length));
+void deque_test(deque_t *deque);

@@ -30,6 +30,8 @@
     return MAP_COMMANDS_ERROR;     \
   }
 
+#define strequal(x, y) strlen(x) == strlen(y) && strncasecmp(x, y, strlen(y)) == 0
+
 void clear();
 
 bool command_hash(commands_t commands, int commands_length);
