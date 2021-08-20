@@ -351,6 +351,7 @@ void dag_print(dag_t *dag) {
     dag_entry_del(new_dag, vertex->key);
   }
   printf("\n");
+  dag_free(new_dag);
 
   return;
 }
@@ -371,4 +372,40 @@ void dag_dump(dag_t *dag, char *filename) {
   }
   fprintf(stream, "}\n");
   fclose(stream);
+}
+
+void dag_test(dag_t *dag) {
+  char *key1 = "a";
+  char *value1 = "1";
+  printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key1, value1);
+  dag_entry_add(dag, key1, (void *)value1, strlen(value1) + 1);
+  char *key2 = "b";
+  char *value2 = "2";
+  printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key2, value2);
+  dag_entry_add(dag, key2, (void *)value2, strlen(value1) + 1);
+  char *key3 = "c";
+  char *value3 = "3";
+  printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key3, value3);
+  dag_entry_add(dag, key3, (void *)value3, strlen(value1) + 1);
+  char *key4 = "d";
+  char *value4 = "4";
+  printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key4, value4);
+  dag_entry_add(dag, key4, (void *)value4, strlen(value1) + 1);
+
+  printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key1, key2);
+  dag_edge_add(dag, key1, key2);
+  printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key2, key3);
+  dag_edge_add(dag, key2, key3);
+  printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key1, key4);
+  dag_edge_add(dag, key1, key4);
+  printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key4, key3);
+  dag_edge_add(dag, key4, key3);
+  printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key2, key4);
+  dag_edge_add(dag, key2, key4);
+
+  printf("> %s %s\n", COMMAND_DAG, COMMAND_DAG_PRINT);
+  dag_print(dag);
+  char *filename = "dag.dot";
+  printf("> %s %s %s\n", COMMAND_DAG, COMMAND_DAG_DUMP, filename);
+  dag_dump(dag, filename);
 }

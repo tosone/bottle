@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <cmddefine.h>
+
 typedef struct dag_vertex_t {
   char *key;
   void *value;
@@ -32,3 +34,4 @@ void dag_dump(dag_t *dag, char *filename);
 void dag_free(dag_t *dag);
 void dag_print(dag_t *dag);
 void dag_debug(dag_t *dag);
+void dag_test(dag_t *dag);

@@ -7,13 +7,14 @@
 #include <cmd.h>
 #include <cmddefine.h>
 #include <command.h>
+#include <error.h>
 
 #define VERSION "v1.0.0"
 
-#define COMMANDS_CHECK(x)                     \
-  if (x) {                                    \
-    commands_free(commands, commands_length); \
-    continue;                                 \
+#define COMMANDS_CHECK(x)           \
+  bottle_error_t result = x;        \
+  if (result != bottle_ok) {        \
+    printf("%s\n", errstr(result)); \
   }
 
 #define MAX_LINE 256
@@ -46,35 +47,35 @@ int main(int argc, char const *argv[]) {
     commands_t commands = commands_parse(buf, &commands_length);
 
     if (commands_length >= 1) {
-      if (strncasecmp(commands[0], COMMAND_HELP, strlen(COMMAND_HELP)) == 0) {
-        COMMANDS_CHECK(!command_help(commands, commands_length));
-      } else if (strncasecmp(commands[0], COMMAND_EXIT, strlen(COMMAND_EXIT)) == 0) {
+      if (strequal(commands[0], COMMAND_HELP)) {
+        COMMANDS_CHECK(cli_help(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_EXIT)) {
         commands_free(commands, commands_length);
         return EXIT_SUCCESS;
-      } else if (strncasecmp(commands[0], COMMAND_VERSION, strlen(COMMAND_VERSION)) == 0) {
+      } else if (strequal(commands[0], COMMAND_VERSION)) {
         printf("%s\n", VERSION);
-      } else if (strncasecmp(commands[0], COMMAND_PI, strlen(COMMAND_PI)) == 0) {
-        COMMANDS_CHECK(!command_pi(commands, commands_length));
-      } else if (strncasecmp(commands[0], COMMAND_HMAP, strlen(COMMAND_HMAP)) == 0) {
-        COMMANDS_CHECK(!command_hmap(commands, commands_length));
-      } else if (strncasecmp(commands[0], COMMAND_LRU, strlen(COMMAND_LRU)) == 0) {
-        COMMANDS_CHECK(!command_lru(commands, commands_length));
-      } else if (strncasecmp(commands[0], COMMAND_AVL, strlen(COMMAND_AVL)) == 0) {
-        COMMANDS_CHECK(!command_avl(commands, commands_length));
-      } else if (strncasecmp(commands[0], COMMAND_SKLIST, strlen(COMMAND_SKLIST)) == 0) {
-        COMMANDS_CHECK(!command_sklist(commands, commands_length));
-      } else if (strncasecmp(commands[0], COMMAND_RBTREE, strlen(COMMAND_RBTREE)) == 0) {
-        COMMANDS_CHECK(!command_rbtree(commands, commands_length));
-      } else if (strncasecmp(commands[0], COMMAND_DEQUE, strlen(COMMAND_DEQUE)) == 0) {
-        COMMANDS_CHECK(!command_deque(commands, commands_length));
-      } else if (strncasecmp(commands[0], COMMAND_STACK, strlen(COMMAND_STACK)) == 0) {
-        COMMANDS_CHECK(!command_stack(commands, commands_length));
-      } else if (strncasecmp(commands[0], COMMAND_BLOOM, strlen(COMMAND_BLOOM)) == 0) {
-        COMMANDS_CHECK(!command_bloom(commands, commands_length));
-      } else if (strncasecmp(commands[0], COMMAND_DAG, strlen(COMMAND_DAG)) == 0) {
-        COMMANDS_CHECK(!command_dag(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_PI)) {
+        COMMANDS_CHECK(cli_pi(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_HMAP)) {
+        COMMANDS_CHECK(cli_hmap(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_LRU)) {
+        COMMANDS_CHECK(cli_lru(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_AVL)) {
+        COMMANDS_CHECK(cli_avl(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_SKLIST)) {
+        COMMANDS_CHECK(cli_sklist(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_RBTREE)) {
+        COMMANDS_CHECK(cli_rbtree(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_DEQUE)) {
+        COMMANDS_CHECK(cli_deque(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_STACK)) {
+        COMMANDS_CHECK(cli_stack(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_BLOOM)) {
+        COMMANDS_CHECK(cli_bloom(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_DAG)) {
+        COMMANDS_CHECK(cli_dag(commands, commands_length));
       } else {
-        printf("%s\n", ERR_COMMAND_NOT_FOUND);
+        printf("%s\n", errstr(error_invalid_command));
       }
     }
     commands_free(commands, commands_length);

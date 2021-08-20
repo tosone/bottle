@@ -55,16 +55,16 @@ void clear() {
   printf("\nclear all, bye\n");
 }
 
-bool command_bloom(commands_t commands, int commands_length) {
+bottle_error_t cli_bloom(commands_t commands, int commands_length) {
   if (bloom == NULL) {
     bloom = bloom_create();
   }
 
-  if (strncasecmp(commands[1], COMMAND_BLOOM_PUSH, strlen(COMMAND_BLOOM_PUSH)) == 0) {
+  if (strequal(commands[1], COMMAND_BLOOM_PUSH)) {
     command_length_check(!=, 3);
     char *data = commands[2];
     bloom_push(bloom, (void *)data, strlen(data) + 1);
-  } else if (strncasecmp(commands[1], COMMAND_BLOOM_CHECK, strlen(COMMAND_BLOOM_CHECK)) == 0) {
+  } else if (strequal(commands[1], COMMAND_BLOOM_CHECK)) {
     command_length_check(!=, 3);
     char *data = commands[2];
     if (bloom_check(bloom, (void *)data, strlen(data) + 1)) {
@@ -73,23 +73,23 @@ bool command_bloom(commands_t commands, int commands_length) {
       printf("key is not exist\n");
     }
   } else {
-    return MAP_COMMANDS_ERROR;
+    return error_invalid_command;
   }
-  return MAP_COMMANDS_OK;
+  return bottle_ok;
 }
 
-bool command_dag(commands_t commands, int commands_length) {
+bottle_error_t cli_dag(commands_t commands, int commands_length) {
   if (dag == NULL) {
     dag = dag_create();
   }
 
-  if (strncasecmp(commands[1], COMMAND_DAG_VERTEX, strlen(COMMAND_DAG_VERTEX)) == 0) {
-    if (strncasecmp(commands[2], COMMAND_DAG_VERTEX_ADD, strlen(COMMAND_DAG_VERTEX_ADD)) == 0) {
+  if (strequal(commands[1], COMMAND_DAG_VERTEX)) {
+    if (strequal(commands[2], COMMAND_DAG_VERTEX_ADD)) {
       command_length_check(!=, 5);
       char *key = commands[3];
       void *value = commands[4];
       dag_entry_add(dag, key, value, strlen(value) + 1);
-    } else if (strncasecmp(commands[2], COMMAND_DAG_VERTEX_GET, strlen(COMMAND_DAG_VERTEX_GET)) == 0) {
+    } else if (strequal(commands[2], COMMAND_DAG_VERTEX_GET)) {
       command_length_check(!=, 4);
       char *key = commands[3];
       dag_vertex_t *vertex = dag_entry_get(dag, key);
@@ -98,7 +98,7 @@ bool command_dag(commands_t commands, int commands_length) {
       } else {
         printf("%s\n", (char *)vertex->value);
       }
-    } else if (strncasecmp(commands[2], COMMAND_DAG_VERTEX_DEL, strlen(COMMAND_DAG_VERTEX_DEL)) == 0) {
+    } else if (strequal(commands[2], COMMAND_DAG_VERTEX_DEL)) {
       command_length_check(!=, 4);
       char *key = commands[3];
       bool success = dag_entry_del(dag, key);
@@ -108,78 +108,46 @@ bool command_dag(commands_t commands, int commands_length) {
         printf("key has been deleted\n");
       }
     } else {
-      return MAP_COMMANDS_ERROR;
+      return error_invalid_command;
     }
-  } else if (strncasecmp(commands[1], COMMAND_DAG_EDGE, strlen(COMMAND_DAG_EDGE)) == 0) {
-    if (strncasecmp(commands[2], COMMAND_DAG_EDGE_ADD, strlen(COMMAND_DAG_EDGE_ADD)) == 0) {
+  } else if (strequal(commands[1], COMMAND_DAG_EDGE)) {
+    if (strequal(commands[2], COMMAND_DAG_EDGE_ADD)) {
       command_length_check(!=, 5);
       char *key_from = commands[3];
       void *key_to = commands[4];
       dag_edge_add(dag, key_from, key_to);
-    } else if (strncasecmp(commands[2], COMMAND_DAG_EDGE_DEL, strlen(COMMAND_DAG_EDGE_DEL)) == 0) {
+    } else if (strequal(commands[2], COMMAND_DAG_EDGE_DEL)) {
       command_length_check(!=, 5);
       char *key_from = commands[3];
       void *key_to = commands[4];
       dag_edge_delete(dag, key_from, key_to);
     } else {
-      return MAP_COMMANDS_ERROR;
+      return error_invalid_command;
     }
-  } else if (strncasecmp(commands[1], COMMAND_DAG_PRINT, strlen(COMMAND_DAG_PRINT)) == 0) {
+  } else if (strequal(commands[1], COMMAND_DAG_PRINT)) {
     dag_print(dag);
-  } else if (strncasecmp(commands[1], COMMAND_DAG_TEST, strlen(COMMAND_DAG_TEST)) == 0) {
-    char *key1 = "a";
-    char *value1 = "1";
-    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key1, value1);
-    dag_entry_add(dag, key1, (void *)value1, strlen(value1) + 1);
-    char *key2 = "b";
-    char *value2 = "2";
-    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key2, value2);
-    dag_entry_add(dag, key2, (void *)value2, strlen(value1) + 1);
-    char *key3 = "c";
-    char *value3 = "3";
-    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key3, value3);
-    dag_entry_add(dag, key3, (void *)value3, strlen(value1) + 1);
-    char *key4 = "d";
-    char *value4 = "4";
-    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_VERTEX, COMMAND_DAG_VERTEX_ADD, key4, value4);
-    dag_entry_add(dag, key4, (void *)value4, strlen(value1) + 1);
-
-    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key1, key2);
-    dag_edge_add(dag, key1, key2);
-    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key2, key3);
-    dag_edge_add(dag, key2, key3);
-    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key1, key4);
-    dag_edge_add(dag, key1, key4);
-    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key4, key3);
-    dag_edge_add(dag, key4, key3);
-    printf("> %s %s %s %s %s\n", COMMAND_DAG, COMMAND_DAG_EDGE, COMMAND_DAG_EDGE_ADD, key2, key4);
-    dag_edge_add(dag, key2, key4);
-
-    printf("> %s %s\n", COMMAND_DAG, COMMAND_DAG_PRINT);
-    dag_print(dag);
-    char *filename = "dag.dot";
-    printf("> %s %s %s\n", COMMAND_DAG, COMMAND_DAG_DUMP, filename);
-    dag_dump(dag, filename);
-  } else if (strncasecmp(commands[1], COMMAND_DAG_DUMP, strlen(COMMAND_DAG_DUMP)) == 0) {
+  } else if (strequal(commands[1], COMMAND_DAG_TEST)) {
+    dag_test(dag);
+  } else if (strequal(commands[1], COMMAND_DAG_DUMP)) {
     command_length_check(!=, 3);
     char *filename = commands[2];
     dag_dump(dag, filename);
   } else {
-    return MAP_COMMANDS_ERROR;
+    return error_invalid_command;
   }
-  return MAP_COMMANDS_OK;
+  return bottle_ok;
 }
 
-bool command_stack(commands_t commands, int commands_length) {
+bottle_error_t cli_stack(commands_t commands, int commands_length) {
   if (stack == NULL) {
     stack = stack_create();
   }
 
-  if (strncasecmp(commands[1], COMMAND_STACK_PUSH, strlen(COMMAND_STACK_PUSH)) == 0) {
+  if (strequal(commands[1], COMMAND_STACK_PUSH)) {
     command_length_check(!=, 3);
     char *data = commands[2];
     stack_push(stack, (void *)data, strlen(data) + 1);
-  } else if (strncasecmp(commands[1], COMMAND_STACK_POP, strlen(COMMAND_STACK_POP)) == 0) {
+  } else if (strequal(commands[1], COMMAND_STACK_POP)) {
     command_length_check(!=, 2);
     stack_entry_t *entry = stack_pop(stack);
     if (entry != NULL) {
@@ -189,17 +157,17 @@ bool command_stack(commands_t commands, int commands_length) {
     } else {
       printf("stack is null\n");
     }
-  } else if (strncasecmp(commands[1], COMMAND_STACK_DUMP, strlen(COMMAND_STACK_DUMP)) == 0) {
+  } else if (strequal(commands[1], COMMAND_STACK_DUMP)) {
     command_length_check(!=, 3);
     char *filename = commands[2];
     stack_dump(stack, filename);
   } else {
-    return MAP_COMMANDS_ERROR;
+    return error_invalid_command;
   }
-  return MAP_COMMANDS_OK;
+  return bottle_ok;
 }
 
-bool command_deque(commands_t commands, int commands_length) {
+bottle_error_t cli_deque(commands_t commands, int commands_length) {
   if (deque == NULL) {
     deque = deque_create();
   }
@@ -212,7 +180,7 @@ bool command_deque(commands_t commands, int commands_length) {
       char *data = commands[3];
       deque_push_front(deque, (void *)data, strlen(data) + 1);
     } else {
-      return MAP_COMMANDS_ERROR;
+      return error_invalid_command;
     }
   } else if (strequal(commands[1], COMMAND_DEQUE_POP)) {
     command_length_check(!=, 3);
@@ -235,7 +203,7 @@ bool command_deque(commands_t commands, int commands_length) {
         printf("deque is null\n");
       }
     } else {
-      return MAP_COMMANDS_ERROR;
+      return error_invalid_command;
     }
   } else if (strequal(commands[1], COMMAND_DEQUE_DUMP)) {
     command_length_check(!=, 3);
@@ -245,50 +213,50 @@ bool command_deque(commands_t commands, int commands_length) {
     command_length_check(!=, 2);
     deque_test(deque);
   } else {
-    return MAP_COMMANDS_ERROR;
+    return error_invalid_command;
   }
-  return MAP_COMMANDS_OK;
+  return bottle_ok;
 }
 
-bool command_rbtree(commands_t commands, int commands_length) {
+bottle_error_t cli_rbtree(commands_t commands, int commands_length) {
   if (rbtree == NULL) {
     rbtree = rbtree_create();
   }
   command_length_check(<, 3);
-  if (strncasecmp(commands[1], COMMAND_RBTREE_SET, strlen(COMMAND_RBTREE_SET)) == 0) {
+  if (strequal(commands[1], COMMAND_RBTREE_SET)) {
     command_length_check(!=, 4);
     char *key = commands[2];
     void *value = commands[3];
     if (rbtree_insert(rbtree, key, value, strlen(value) + 1) == NULL) {
-      return MAP_COMMANDS_ERROR;
+      return error_invalid_command;
     }
-  } else if (strncasecmp(commands[1], COMMAND_RBTREE_DUMP, strlen(COMMAND_RBTREE_DUMP)) == 0) {
+  } else if (strequal(commands[1], COMMAND_RBTREE_DUMP)) {
     command_length_check(!=, 3);
     char *filename = commands[2];
     rbtree_dump(rbtree, filename);
-  } else if (strncasecmp(commands[1], COMMAND_RBTREE_DEL, strlen(COMMAND_RBTREE_DEL)) == 0) {
+  } else if (strequal(commands[1], COMMAND_RBTREE_DEL)) {
     command_length_check(!=, 3);
     rbtree_entry_t *entry = rbtree_delete(rbtree, commands[2]);
     free(entry->key);
     free(entry->value);
     free(entry);
   } else {
-    return MAP_COMMANDS_ERROR;
+    return error_invalid_command;
   }
-  return MAP_COMMANDS_OK;
+  return bottle_ok;
 }
 
-bool command_sklist(commands_t commands, int commands_length) {
+bottle_error_t cli_sklist(commands_t commands, int commands_length) {
   if (hmap == NULL) {
     hmap = hashmap_create();
   }
   command_length_check(<, 3);
-  if (strncasecmp(commands[1], COMMAND_SKLIST_SET, strlen(COMMAND_SKLIST_SET)) == 0) {
+  if (strequal(commands[1], COMMAND_SKLIST_SET)) {
     command_length_check(!=, 4);
     double score = strtod(commands[2], NULL);
     sds ele = sdsnew(commands[3]);
     slInsert(sklist, score, ele);
-  } else if (strncasecmp(commands[1], COMMAND_SKLIST_GET, strlen(COMMAND_SKLIST_GET)) == 0) {
+  } else if (strequal(commands[1], COMMAND_SKLIST_GET)) {
     command_length_check(!=, 4);
     double score = strtod(commands[2], NULL);
     sds ele = sdsnew(commands[3]);
@@ -304,7 +272,7 @@ bool command_sklist(commands_t commands, int commands_length) {
     } else {
       printf("%lu\n", rank);
     }
-  } else if (strncasecmp(commands[1], COMMAND_SKLIST_DEL, strlen(COMMAND_SKLIST_DEL)) == 0) {
+  } else if (strequal(commands[1], COMMAND_SKLIST_DEL)) {
     command_length_check(!=, 4);
     double score = strtod(commands[2], NULL);
     sds ele = sdsnew(commands[3]);
@@ -314,50 +282,50 @@ bool command_sklist(commands_t commands, int commands_length) {
       printf("cannot find this element");
     }
   }
-  return MAP_COMMANDS_OK;
+  return bottle_ok;
 }
 
-bool command_avl(commands_t commands, int commands_length) {
+bottle_error_t cli_avl(commands_t commands, int commands_length) {
   command_length_check(<, 3);
-  if (strncasecmp(commands[1], COMMAND_AVL_SET, strlen(COMMAND_AVL_SET)) == 0) {
+  if (strequal(commands[1], COMMAND_AVL_SET)) {
     command_length_check(!=, 3);
     int key = atoi(commands[2]);
     avl = avl_set(avl, key);
-  } else if (strncasecmp(commands[1], COMMAND_AVL_GET, strlen(COMMAND_AVL_GET)) == 0) {
+  } else if (strequal(commands[1], COMMAND_AVL_GET)) {
     command_length_check(!=, 3);
     int key = atoi(commands[2]);
     printf("%s\n", avl_get(avl, key) ? "true" : "false");
-  } else if (strncasecmp(commands[1], COMMAND_AVL_PRINT, strlen(COMMAND_AVL_PRINT)) == 0) {
+  } else if (strequal(commands[1], COMMAND_AVL_PRINT)) {
     command_length_check(!=, 3);
-    if (strncasecmp(commands[2], COMMAND_AVL_PRE, strlen(COMMAND_AVL_PRE)) == 0) {
+    if (strequal(commands[2], COMMAND_AVL_PRE)) {
       avl_pre_order(avl);
-    } else if (strncasecmp(commands[2], COMMAND_AVL_IN, strlen(COMMAND_AVL_IN)) == 0) {
+    } else if (strequal(commands[2], COMMAND_AVL_IN)) {
       avl_in_order(avl);
-    } else if (strncasecmp(commands[2], COMMAND_AVL_POST, strlen(COMMAND_AVL_POST)) == 0) {
+    } else if (strequal(commands[2], COMMAND_AVL_POST)) {
       avl_post_order(avl);
     }
-  } else if (strncasecmp(commands[1], COMMAND_AVL_DUMP, strlen(COMMAND_AVL_DUMP)) == 0) {
+  } else if (strequal(commands[1], COMMAND_AVL_DUMP)) {
     command_length_check(!=, 3);
     char *filename = commands[2];
     avl_dump(avl, filename);
   }
-  return MAP_COMMANDS_OK;
+  return bottle_ok;
 }
 
-bool command_lru(commands_t commands, int commands_length) {
+bottle_error_t cli_lru(commands_t commands, int commands_length) {
   if (lru == NULL) {
     lru = LRU_create();
   }
   command_length_check(<, 2);
-  if (strncasecmp(commands[1], COMMAND_LRU_LEN, strlen(COMMAND_LRU_LEN)) == 0) {
+  if (strequal(commands[1], COMMAND_LRU_LEN)) {
     command_length_check(!=, 2);
     printf("%d\n", lru->len);
-  } else if (strncasecmp(commands[1], COMMAND_LRU_SET, strlen(COMMAND_LRU_SET)) == 0) {
+  } else if (strequal(commands[1], COMMAND_LRU_SET)) {
     command_length_check(!=, 4);
     char *key = commands[2];
     void *value = commands[3];
     LRU_set(lru, key, value, strlen(value) + 1);
-  } else if (strncasecmp(commands[1], COMMAND_LRU_GET, strlen(COMMAND_LRU_GET)) == 0) {
+  } else if (strequal(commands[1], COMMAND_LRU_GET)) {
     command_length_check(!=, 3);
     char *key = commands[2];
     size_t value_length = 0;
@@ -367,11 +335,11 @@ bool command_lru(commands_t commands, int commands_length) {
     } else {
       printf("%s\n", value);
     }
-  } else if (strncasecmp(commands[1], COMMAND_LRU_CAP, strlen(COMMAND_LRU_CAP)) == 0) {
+  } else if (strequal(commands[1], COMMAND_LRU_CAP)) {
     command_length_check(<, 3);
-    if (strncasecmp(commands[2], COMMAND_LRU_GET, strlen(COMMAND_LRU_GET)) == 0) {
+    if (strequal(commands[2], COMMAND_LRU_GET)) {
       printf("%d\n", lru->cap);
-    } else if (strncasecmp(commands[2], COMMAND_LRU_SET, strlen(COMMAND_LRU_SET)) == 0) {
+    } else if (strequal(commands[2], COMMAND_LRU_SET)) {
       int cap = atoi(commands[3]);
       if (cap < lru->cap) {
         printf("please set more bigger cap\n");
@@ -379,30 +347,30 @@ bool command_lru(commands_t commands, int commands_length) {
         lru->cap = cap;
       }
     }
-  } else if (strncasecmp(commands[1], COMMAND_LRU_PRINT, strlen(COMMAND_LRU_PRINT)) == 0) {
+  } else if (strequal(commands[1], COMMAND_LRU_PRINT)) {
     command_length_check(!=, 2);
     LRU_print(lru);
   }
-  return MAP_COMMANDS_OK;
+  return bottle_ok;
 }
 
-bool command_hmap(commands_t commands, int commands_length) {
+bottle_error_t cli_hmap(commands_t commands, int commands_length) {
   if (sklist == NULL) {
     sklist = slCreate();
   }
   command_length_check(<, 2);
-  if (strncasecmp(commands[1], COMMAND_HMAP_CAP, strlen(COMMAND_HMAP_CAP)) == 0) {
+  if (strequal(commands[1], COMMAND_HMAP_CAP)) {
     command_length_check(!=, 2);
     printf("%d\n", hmap->cap);
-  } else if (strncasecmp(commands[1], COMMAND_HMAP_LEN, strlen(COMMAND_HMAP_LEN)) == 0) {
+  } else if (strequal(commands[1], COMMAND_HMAP_LEN)) {
     command_length_check(!=, 2);
     printf("%d\n", hmap->len);
-  } else if (strncasecmp(commands[1], COMMAND_HMAP_SET, strlen(COMMAND_HMAP_SET)) == 0) {
+  } else if (strequal(commands[1], COMMAND_HMAP_SET)) {
     command_length_check(!=, 4);
     char *key = commands[2];
     void *value = commands[3];
     hmap = hashmap_set(hmap, key, value, strlen(value) + 1);
-  } else if (strncasecmp(commands[1], COMMAND_HMAP_GET, strlen(COMMAND_HMAP_GET)) == 0) {
+  } else if (strequal(commands[1], COMMAND_HMAP_GET)) {
     command_length_check(!=, 3);
     char *key = commands[2];
     size_t value_length = 0;
@@ -412,18 +380,18 @@ bool command_hmap(commands_t commands, int commands_length) {
     } else {
       printf("%s\n", value);
     }
-  } else if (strncasecmp(commands[1], COMMAND_HMAP_DEL, strlen(COMMAND_HMAP_DEL)) == 0) {
+  } else if (strequal(commands[1], COMMAND_HMAP_DEL)) {
     command_length_check(!=, 3);
     char *key = commands[2];
     hashmap_del(hmap, key);
-  } else if (strncasecmp(commands[1], COMMAND_HMAP_PRINT, strlen(COMMAND_HMAP_PRINT)) == 0) {
+  } else if (strequal(commands[1], COMMAND_HMAP_PRINT)) {
     command_length_check(!=, 2);
     hashmap_print(hmap);
   }
-  return MAP_COMMANDS_OK;
+  return bottle_ok;
 }
 
-bool command_pi(commands_t commands, int commands_length) {
+bottle_error_t cli_pi(commands_t commands, int commands_length) {
   int length = 100;
   if (commands_length == 2) {
     length = atoi(commands[1]);
@@ -432,10 +400,10 @@ bool command_pi(commands_t commands, int commands_length) {
     length = 100;
   }
   pi(length);
-  return MAP_COMMANDS_OK;
+  return bottle_ok;
 }
 
-bool command_help(commands_t commands, int commands_length) {
+bottle_error_t cli_help(commands_t commands, int commands_length) {
   printf(ANSI_CODE_GREEN "%s" ANSI_CODE_RESET, "help");
   printf(ANSI_CODE_YELLOW "\n\tprint help information" ANSI_CODE_RESET "\n");
 
@@ -498,5 +466,5 @@ bool command_help(commands_t commands, int commands_length) {
   printf(" <length>\n");
   printf(ANSI_CODE_YELLOW "\tcalculate the pi to specific length" ANSI_CODE_RESET "\n\n");
 
-  return MAP_COMMANDS_OK;
+  return bottle_ok;
 }
