@@ -6,6 +6,7 @@
 #include <error.h>
 
 #include <avl.h>
+#include <bittree.h>
 #include <bloom.h>
 #include <cmddefine.h>
 #include <command.h>
@@ -18,13 +19,6 @@
 #include <stack.h>
 
 #include <pi.h>
-
-// #define ERR_COMMAND "invalid command"
-// #define ERR_COMMAND_NOT_FOUND "command not found"
-// #define ERR_INTERNAL "internal error"
-
-// #define MAP_COMMANDS_OK true
-// #define MAP_COMMANDS_ERROR false
 
 #define command_length_check(x, y)                 \
   if (commands_length x y) {                       \
@@ -50,3 +44,4 @@ bottle_error_t cli_deque(cli_function_arguments);
 bottle_error_t cli_stack(cli_function_arguments);
 bottle_error_t cli_bloom(cli_function_arguments);
 bottle_error_t cli_dag(cli_function_arguments);
+bottle_error_t cli_bittree(cli_function_arguments);

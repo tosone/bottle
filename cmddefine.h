@@ -74,3 +74,8 @@
 #define COMMAND_DAG_EDGE "edge"
 #define COMMAND_DAG_EDGE_ADD "add"
 #define COMMAND_DAG_EDGE_DEL "del"
+
+#define COMMAND_BITTREE "bittree"
+#define COMMAND_BITTREE_ADD "add"
+#define COMMAND_BITTREE_PRINT "print"
+#define COMMAND_BITTREE_TEST "test"
