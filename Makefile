@@ -1,11 +1,11 @@
 TARGET    = bottle
 
-CFLAGS   += -Os -std=gnu99 -Wall -I. -fdata-sections -ffunction-sections
+CFLAGS   += -Os -std=gnu99 -Wall -I./include -fdata-sections -ffunction-sections
 CLIBS    += -lm
 
 PREFIX   ?= /usr/local
 
-OBJECTS   = $(patsubst %.c, %.o, $(wildcard *.c))
+OBJECTS   = $(patsubst %.c, %.o, $(wildcard src/*.c))
 STRIP     = $(ARCH)strip
 
 .PHONY: all

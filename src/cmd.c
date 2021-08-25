@@ -27,6 +27,7 @@ xstack_t *stack;
 bloom_t *bloom;
 dag_t *dag;
 bittree_t *bittree;
+trie_t *trie;
 
 void clear() {
   if (hmap != NULL) {
@@ -90,7 +91,16 @@ bottle_error_t cli_bittree(commands_t commands, int commands_length) {
   return bottle_ok;
 }
 
-bottle_error_t cli_trie(commands_t commands, int commands_length) { return bottle_ok; }
+bottle_error_t cli_trie(commands_t commands, int commands_length) {
+  if (trie == NULL) {
+    trie = trie_create();
+  }
+  if (strequal(commands[1], COMMAND_TRIE_TEST)) {
+    command_length_check(!=, 2);
+    trie_test(trie);
+  }
+  return bottle_ok;
+}
 
 bottle_error_t cli_dag(commands_t commands, int commands_length) {
   if (dag == NULL) {

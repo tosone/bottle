@@ -79,3 +79,10 @@
 #define COMMAND_BITTREE_ADD "add"
 #define COMMAND_BITTREE_PRINT "print"
 #define COMMAND_BITTREE_TEST "test"
+
+#define COMMAND_TRIE "trie"
+#define COMMAND_TRIE_ADD "add"
+#define COMMAND_TRIE_DELETE "del"
+#define COMMAND_TRIE_PRINT "print"
+#define COMMAND_TRIE_DUMP "dump"
+#define COMMAND_TRIE_TEST "test"
