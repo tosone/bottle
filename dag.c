@@ -49,7 +49,7 @@ dag_vertex_t *dag_entry_add(dag_t *dag, char *key, void *value, size_t value_len
   entry->children_new = deque_create();
   entry->parents_new = deque_create();
 
-  bzero(entry->key, strlen(key) + 1);
+  memset(entry->key, 0, strlen(key) + 1);
   strcpy(entry->key, key);
   memcpy(entry->value, value, value_length);
 

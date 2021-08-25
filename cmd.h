@@ -5,10 +5,11 @@
 
 #include <error.h>
 
+#include <cmddefine.h>
+
 #include <avl.h>
 #include <bittree.h>
 #include <bloom.h>
-#include <cmddefine.h>
 #include <command.h>
 #include <dag.h>
 #include <deque.h>
@@ -17,6 +18,7 @@
 #include <rbtree.h>
 #include <skiplist.h>
 #include <stack.h>
+#include <trie.h>
 
 #include <pi.h>
 
@@ -45,3 +47,4 @@ bottle_error_t cli_stack(cli_function_arguments);
 bottle_error_t cli_bloom(cli_function_arguments);
 bottle_error_t cli_dag(cli_function_arguments);
 bottle_error_t cli_bittree(cli_function_arguments);
+bottle_error_t cli_trie(cli_function_arguments);

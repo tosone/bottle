@@ -90,6 +90,8 @@ bottle_error_t cli_bittree(commands_t commands, int commands_length) {
   return bottle_ok;
 }
 
+bottle_error_t cli_trie(commands_t commands, int commands_length) { return bottle_ok; }
+
 bottle_error_t cli_dag(commands_t commands, int commands_length) {
   if (dag == NULL) {
     dag = dag_create();
