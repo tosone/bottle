@@ -11,6 +11,7 @@
 
 typedef struct trie_entry_t {
   char c;
+  char *str;
   bool end;
   deque_t *next;
 } trie_entry_t;
@@ -25,5 +26,5 @@ void trie_free(trie_t *trie);
 void trie_add(trie_t *trie, char *str);
 bool trie_delete(trie_t *trie, char *str);
 void trie_print(trie_t *trie_t);
-void trie_dump(trie_t *trie_t);
+void trie_dump(trie_t *trie_t, char *filename);
 void trie_test(trie_t *trie_t);

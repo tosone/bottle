@@ -15,7 +15,7 @@ all: $(OBJECTS)
 
 .PHONY: clean
 clean:
-	$(RM) -r *.o *.a *.out $(TARGET) $(TARGET).exe
+	$(RM) -r src/*.o *.o *.a *.out $(TARGET) $(TARGET).exe
 
 .PHONY: install
 install:
