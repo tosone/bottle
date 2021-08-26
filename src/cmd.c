@@ -28,7 +28,7 @@ bloom_t *bloom;
 dag_t *dag;
 bittree_t *bittree;
 trie_t *trie;
-struct hll *hll;
+hll_t *hll;
 
 void clear() {
   if (hmap != NULL) {
@@ -110,6 +110,15 @@ bottle_error_t cli_hll(cli_function_arguments) {
   if (strequal(commands[1], COMMAND_HLL_TEST)) {
     command_length_check(!=, 2);
     hll_test(hll);
+  } else if (strequal(commands[1], COMMAND_HLL_ADD)) {
+    command_length_check(!=, 3);
+    hll_add(hll, commands[2], strlen(commands[2]) + 1);
+  } else if (strequal(commands[1], COMMAND_HLL_PRINT)) {
+    command_length_check(!=, 2);
+    hll_print(hll);
+  } else if (strequal(commands[1], COMMAND_HLL_COUNT)) {
+    command_length_check(!=, 2);
+    printf("%" PRId64 "\n", hll_count(hll));
   }
   return bottle_ok;
 }

@@ -22,13 +22,13 @@
 #define HLL_OK 1
 #define HLL_ERROR 0
 
-struct hll {
+typedef struct hll_t {
   uint8_t registers[HLL_REGISTERS];
   double PE[64];
-};
+} hll_t;
 
-struct hll *hll_init(void);
-uint8_t hll_add(struct hll *h, uint8_t *data, uint32_t datalen);
-void hll_print(struct hll *h);
-void hll_test(struct hll *h);
-uint64_t hll_count(struct hll *h);
+hll_t *hll_init(void);
+uint8_t hll_add(hll_t *h, char *data, size_t datalen);
+void hll_print(hll_t *h);
+void hll_test(hll_t *h);
+uint64_t hll_count(hll_t *h);

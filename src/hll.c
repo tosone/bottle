@@ -12,12 +12,13 @@ uint8_t hll_get_zeros(uint64_t value) {
   return i;
 }
 
-struct hll *hll_init(void) {
+hll_t *hll_init(void) {
   uint32_t i;
-  struct hll *h;
-  h = (struct hll *)calloc(1, sizeof(struct hll));
-  if (!h)
+  hll_t *h;
+  h = (hll_t *)calloc(1, sizeof(hll_t));
+  if (!h) {
     return HLL_ERROR;
+  }
 
   h->PE[0] = 1;
   for (i = 1; i < 64; i++) {
@@ -26,12 +27,12 @@ struct hll *hll_init(void) {
   return h;
 }
 
-uint8_t hll_add(struct hll *h, uint8_t *data, uint32_t datalen) {
+uint8_t hll_add(hll_t *h, char *data, size_t datalen) {
   uint64_t hash, value;
   uint16_t index;
   uint8_t zero;
 
-  hash = murmurhash64(data, datalen);
+  hash = murmurhash64((void *)data, datalen);
   index = (uint16_t)HLL_GET_INDEX(hash);
   value = HLL_GET_VALUE(hash);
   zero = hll_get_zeros(value);
@@ -39,7 +40,7 @@ uint8_t hll_add(struct hll *h, uint8_t *data, uint32_t datalen) {
   return HLL_OK;
 }
 
-uint64_t hll_count(struct hll *h) {
+uint64_t hll_count(hll_t *h) {
   double m = HLL_REGISTERS;
   double alpha = 0.7213 / (1 + 1.079 / m);
   double E = 0;
@@ -68,7 +69,7 @@ uint64_t hll_count(struct hll *h) {
   return (uint64_t)E * 2;
 }
 
-void hll_print(struct hll *h) {
+void hll_print(hll_t *h) {
   for (uint32_t i = 0; i < HLL_REGISTERS; i++) {
     if (i % 64 == 0) {
       if (i != 0) {
@@ -81,13 +82,13 @@ void hll_print(struct hll *h) {
   printf("\n");
 }
 
-void hll_test(struct hll *h) {
+void hll_test(hll_t *h) {
   size_t test_size = 1000;
   printf("> hll add ....\n");
   for (size_t i = 0; i < test_size; i++) {
     char test[9];
     sprintf(test, "%8zu", i);
-    hll_add(h, (uint8_t *)test, 9);
+    hll_add(h, test, 9);
   }
   printf("> hll print\n");
   hll_print(h);

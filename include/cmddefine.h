@@ -88,4 +88,7 @@
 #define COMMAND_TRIE_TEST "test"
 
 #define COMMAND_HLL "hll"
+#define COMMAND_HLL_ADD "add"
+#define COMMAND_HLL_COUNT "count"
 #define COMMAND_HLL_TEST "test"
+#define COMMAND_HLL_PRINT "print"

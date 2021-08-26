@@ -36,6 +36,7 @@ int main(int argc, char const *argv[]) {
   char buf[MAX_LINE] = {0};
   while (true) {
     printf("> ");
+    fflush(stdout);
     if (fgets(buf, MAX_LINE, stdin) == NULL)
       return EXIT_FAILURE;
     size_t len = strlen(buf);
