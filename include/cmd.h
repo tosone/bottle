@@ -14,6 +14,7 @@
 #include <dag.h>
 #include <deque.h>
 #include <hashmap.h>
+#include <hll.h>
 #include <lru.h>
 #include <rbtree.h>
 #include <skiplist.h>
@@ -48,3 +49,4 @@ bottle_error_t cli_bloom(cli_function_arguments);
 bottle_error_t cli_dag(cli_function_arguments);
 bottle_error_t cli_bittree(cli_function_arguments);
 bottle_error_t cli_trie(cli_function_arguments);
+bottle_error_t cli_hll(cli_function_arguments);

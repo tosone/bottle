@@ -86,3 +86,6 @@
 #define COMMAND_TRIE_PRINT "print"
 #define COMMAND_TRIE_DUMP "dump"
 #define COMMAND_TRIE_TEST "test"
+
+#define COMMAND_HLL "hll"
+#define COMMAND_HLL_TEST "test"

@@ -1,6 +1,6 @@
 TARGET    = bottle
 
-CFLAGS   += -Os -std=gnu99 -Wall -I./include -fdata-sections -ffunction-sections
+CFLAGS   += -Os -std=gnu99 -Wall -I./include -fdata-sections -ffunction-sections -DDEBUG
 CLIBS    += -lm
 
 PREFIX   ?= /usr/local

@@ -78,6 +78,8 @@ int main(int argc, char const *argv[]) {
         COMMANDS_CHECK(cli_bittree(commands, commands_length));
       } else if (strequal(commands[0], COMMAND_TRIE)) {
         COMMANDS_CHECK(cli_trie(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_HLL)) {
+        COMMANDS_CHECK(cli_hll(commands, commands_length));
       } else {
         printf("%s\n", errstr(error_invalid_command));
       }

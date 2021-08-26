@@ -28,6 +28,7 @@ bloom_t *bloom;
 dag_t *dag;
 bittree_t *bittree;
 trie_t *trie;
+struct hll *hll;
 
 void clear() {
   if (hmap != NULL) {
@@ -98,6 +99,17 @@ bottle_error_t cli_trie(commands_t commands, int commands_length) {
   if (strequal(commands[1], COMMAND_TRIE_TEST)) {
     command_length_check(!=, 2);
     trie_test(trie);
+  }
+  return bottle_ok;
+}
+
+bottle_error_t cli_hll(cli_function_arguments) {
+  if (hll == NULL) {
+    hll = hll_init();
+  }
+  if (strequal(commands[1], COMMAND_HLL_TEST)) {
+    command_length_check(!=, 2);
+    hll_test(hll);
   }
   return bottle_ok;
 }
