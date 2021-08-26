@@ -30,7 +30,7 @@ bloom_t *bloom_create() {
 
 void bloom_push(bloom_t *bloom, void *data, size_t data_length) {
   for (int i = 0; i < bloom->hashes; i++) {
-    uint32_t hash = murmurhash(data, data_length, i);
+    uint32_t hash = murmurhash32(data, data_length);
     hash %= bloom->bytes * 8;
     bloom->bf[hash / 8] |= 1 << hash % 8;
   }
@@ -38,7 +38,7 @@ void bloom_push(bloom_t *bloom, void *data, size_t data_length) {
 
 bool bloom_check(bloom_t *bloom, void *data, size_t data_length) {
   for (int i = 0; i < bloom->hashes; i++) {
-    uint32_t hash = murmurhash(data, data_length, i);
+    uint32_t hash = murmurhash32(data, data_length);
     hash %= bloom->bytes * 8;
     if (!(bloom->bf[hash / 8] & 1 << hash % 8)) {
       return false;

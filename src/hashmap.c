@@ -74,7 +74,7 @@ hashmap_t *hashmap_set(hashmap_t *hashmap, const char *key, const void *value, c
   if (hashmap->len / (hashmap->cap * 1.0) >= HMAP_THRESHOLD) {
     hashmap = hashmap_rehash(hashmap);
   }
-  uint32_t slot = murmurhash(key, strlen(key), 0);
+  uint32_t slot = murmurhash32(key, strlen(key));
   hashmap_entry_t *entry = hashmap->entries[slot % hashmap->cap];
 
   hashmap->len++;
@@ -104,7 +104,7 @@ hashmap_t *hashmap_set(hashmap_t *hashmap, const char *key, const void *value, c
 }
 
 void *hashmap_get(hashmap_t *hashmap, const char *key, size_t *value_length) {
-  uint32_t slot = murmurhash(key, strlen(key), 0);
+  uint32_t slot = murmurhash32(key, strlen(key));
   hashmap_entry_t *entry = hashmap->entries[slot % hashmap->cap];
   if (entry == NULL) {
     return NULL;
@@ -122,7 +122,7 @@ void *hashmap_get(hashmap_t *hashmap, const char *key, size_t *value_length) {
 }
 
 void hashmap_del(hashmap_t *hashmap, const char *key) {
-  uint32_t slot = murmurhash(key, strlen(key), 0);
+  uint32_t slot = murmurhash32(key, strlen(key));
   hashmap_entry_t *entry = hashmap->entries[slot % hashmap->cap];
   if (entry == NULL) {
     return;

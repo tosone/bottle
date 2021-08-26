@@ -1,6 +1,6 @@
 #include <hll.h>
 
-static inline uint8_t hll_get_zeros(uint64_t value) {
+uint8_t hll_get_zeros(uint64_t value) {
   uint8_t i;
   uint64_t mask = 1;
   for (i = 0; i < HLL_VALUE_BITS; i++) {
@@ -10,56 +10,6 @@ static inline uint8_t hll_get_zeros(uint64_t value) {
   }
 
   return i;
-}
-
-static void write_u64(uint64_t x) {
-  int i;
-  for (i = 0; i < 64; ++i) {
-    putchar(x & ((uint64_t)1 << (63 - i)) ? '1' : '0');
-  }
-  printf("\n");
-}
-
-static uint64_t hll_murmur64(const void *key, int len) {
-  const uint64_t m = 0xc6a4a7935bd1e995;
-  const int r = 47;
-  uint64_t h = HLL_SEED ^ (len * m);
-  const uint8_t *data = (const uint8_t *)key;
-  const uint8_t *end = data + (len - (len & 7));
-
-  while (data != end) {
-    uint64_t k;
-    k = *((uint64_t *)data);
-    k *= m;
-    k ^= k >> r;
-    k *= m;
-    h ^= k;
-    h *= m;
-    data += 8;
-  }
-
-  switch (len & 7) {
-  case 7:
-    h ^= (uint64_t)data[6] << 48;
-  case 6:
-    h ^= (uint64_t)data[5] << 40;
-  case 5:
-    h ^= (uint64_t)data[4] << 32;
-  case 4:
-    h ^= (uint64_t)data[3] << 24;
-  case 3:
-    h ^= (uint64_t)data[2] << 16;
-  case 2:
-    h ^= (uint64_t)data[1] << 8;
-  case 1:
-    h ^= (uint64_t)data[0];
-    h *= m;
-  }
-
-  h ^= h >> r;
-  h *= m;
-  h ^= h >> r;
-  return h;
 }
 
 struct hll *hll_init(void) {
@@ -81,24 +31,11 @@ uint8_t hll_add(struct hll *h, uint8_t *data, uint32_t datalen) {
   uint16_t index;
   uint8_t zero;
 
-  hash = hll_murmur64(data, datalen);
+  hash = murmurhash64(data, datalen);
   index = (uint16_t)HLL_GET_INDEX(hash);
   value = HLL_GET_VALUE(hash);
   zero = hll_get_zeros(value);
   h->registers[index] = MAX(zero, h->registers[index]);
-
-#ifdef DEBUG
-  printf("HASH  = ");
-  write_u64(hash);
-  printf("INDEX = ");
-  write_u64(HLL_GET_INDEX(hash));
-  printf("VALUE = ");
-  write_u64(HLL_GET_VALUE(hash));
-  printf("index = %d\n", index);
-  printf("value = %" PRId64 "\n", value);
-  printf("number of cons zeros = %d\n", hll_get_zeros(value));
-#endif
-
   return HLL_OK;
 }
 
@@ -133,8 +70,15 @@ uint64_t hll_count(struct hll *h) {
 
 void hll_print(struct hll *h) {
   for (uint32_t i = 0; i < HLL_REGISTERS; i++) {
-    printf("R %d : %d\n", i, h->registers[i]);
+    if (i % 64 == 0) {
+      if (i != 0) {
+        printf("\n");
+      }
+      printf("%5d: ", i);
+    }
+    printf("%-3d", h->registers[i]);
   }
+  printf("\n");
 }
 
 void hll_test(struct hll *h) {
@@ -145,6 +89,8 @@ void hll_test(struct hll *h) {
     sprintf(test, "%8zu", i);
     hll_add(h, (uint8_t *)test, 9);
   }
+  printf("> hll print\n");
+  hll_print(h);
   printf("> hll count\n");
   printf("%" PRId64 "\n", hll_count(h));
 }

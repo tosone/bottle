@@ -106,7 +106,7 @@ rbtree_entry_t *rbtree_insert(rbtree_t *rbtree, const char *key, const void *val
   memcpy(entry->value, value, value_length);
   entry->value_length = value_length;
   entry->color = rbtree_color_red;
-  entry->key_hash = murmurhash(key, strlen(key), 0);
+  entry->key_hash = murmurhash32(key, strlen(key));
   if (rbtree->root == NULL) {
     entry->color = rbtree_color_black;
     rbtree->root = entry;
@@ -270,7 +270,7 @@ int rbtree_find_less_equal(rbtree_t *rbtree, const char *key, rbtree_entry_t **r
 
   *result = NULL;
 
-  uint32_t hash = murmurhash(key, strlen(key), 0);
+  uint32_t hash = murmurhash32(key, strlen(key));
 
   while (node != NULL) {
     if (hash == node->key_hash) {

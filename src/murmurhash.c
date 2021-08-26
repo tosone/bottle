@@ -1,62 +1,96 @@
-/**
- * `murmurhash.h' - murmurhash
- *
- * copyright (c) 2014 joseph werle <joseph.werle@gmail.com>
- */
-#include "murmurhash.h"
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <murmurhash.h>
 
-uint32_t murmurhash(const char *key, uint32_t len, uint32_t seed) {
-  uint32_t c1 = 0xcc9e2d51;
-  uint32_t c2 = 0x1b873593;
-  uint32_t r1 = 15;
-  uint32_t r2 = 13;
-  uint32_t m = 5;
-  uint32_t n = 0xe6546b64;
-  uint32_t h = 0;
-  uint32_t k = 0;
-  uint8_t *d = (uint8_t *)key; // 32 bit extract from `key'
-  const uint32_t *chunks = NULL;
-  const uint8_t *tail = NULL; // tail - last 8 bytes
-  int i = 0;
-  int l = len / 4; // chunk length
-  h = seed;
-  chunks = (const uint32_t *)(d + l * 4); // body
-  tail = (const uint8_t *)(d + l * 4);    // last 8 byte chunk of `key'
-  // for each 4 byte chunk of `key'
-  for (i = -l; i != 0; ++i) {
-    // next 4 byte chunk of `key'
-    k = chunks[i];
-    // encode next 4 byte chunk of `key'
-    k *= c1;
-    k = (k << r1) | (k >> (32 - r1));
-    k *= c2;
-    // append to hash
-    h ^= k;
-    h = (h << r2) | (h >> (32 - r2));
-    h = h * m + n;
+uint32_t murmurhash32(const void *data, size_t len) {
+  if (data == NULL || len == 0) {
+    return 0;
   }
+
+  const uint32_t c1 = 0xcc9e2d51;
+  const uint32_t c2 = 0x1b873593;
+
+  const int nblocks = len / 4;
+  const uint32_t *blocks = (const uint32_t *)(data);
+  const uint8_t *tail = (const uint8_t *)(data + (nblocks * 4));
+
+  uint32_t h = 0;
+
+  int i;
+  uint32_t k;
+  for (i = 0; i < nblocks; i++) {
+    k = blocks[i];
+
+    k *= c1;
+    k = (k << 15) | (k >> (32 - 15));
+    k *= c2;
+
+    h ^= k;
+    h = (h << 13) | (h >> (32 - 13));
+    h = (h * 5) + 0xe6546b64;
+  }
+
   k = 0;
-  // remainder
-  switch (len & 3) { // `len % 4'
+  switch (len & 3) {
   case 3:
-    k ^= (tail[2] << 16);
+    k ^= tail[2] << 16;
   case 2:
-    k ^= (tail[1] << 8);
+    k ^= tail[1] << 8;
   case 1:
     k ^= tail[0];
     k *= c1;
-    k = (k << r1) | (k >> (32 - r1));
+    k = (k << 15) | (k >> (32 - 15));
     k *= c2;
     h ^= k;
-  }
+  };
+
   h ^= len;
-  h ^= (h >> 16);
+
+  h ^= h >> 16;
   h *= 0x85ebca6b;
-  h ^= (h >> 13);
+  h ^= h >> 13;
   h *= 0xc2b2ae35;
-  h ^= (h >> 16);
+  h ^= h >> 16;
+
+  return h;
+}
+
+uint64_t murmurhash64(const void *key, size_t len) {
+  const uint64_t m = 0xc6a4a7935bd1e995;
+  const int r = 47;
+  uint64_t h = MURMURHASH_SEED ^ (len * m);
+  const uint8_t *data = (const uint8_t *)key;
+  const uint8_t *end = data + (len - (len & 7));
+
+  while (data != end) {
+    uint64_t k;
+    k = *((uint64_t *)data);
+    k *= m;
+    k ^= k >> r;
+    k *= m;
+    h ^= k;
+    h *= m;
+    data += 8;
+  }
+
+  switch (len & 7) {
+  case 7:
+    h ^= (uint64_t)data[6] << 48; /* fall-thru */
+  case 6:
+    h ^= (uint64_t)data[5] << 40; /* fall-thru */
+  case 5:
+    h ^= (uint64_t)data[4] << 32; /* fall-thru */
+  case 4:
+    h ^= (uint64_t)data[3] << 24; /* fall-thru */
+  case 3:
+    h ^= (uint64_t)data[2] << 16; /* fall-thru */
+  case 2:
+    h ^= (uint64_t)data[1] << 8; /* fall-thru */
+  case 1:
+    h ^= (uint64_t)data[0];
+    h *= m; /* fall-thru */
+  };
+
+  h ^= h >> r;
+  h *= m;
+  h ^= h >> r;
   return h;
 }

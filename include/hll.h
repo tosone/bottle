@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define HLL_SEED 0xadc83b19ULL
+#include <murmurhash.h>
+
 #define HLL_REGISTERS (1 << 14)
 
 #define HLL_INDEX_BITS 14

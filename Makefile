@@ -1,17 +1,17 @@
 TARGET    = bottle
 
-CFLAGS   += -Os -std=gnu99 -Wall -I./include -fdata-sections -ffunction-sections -DDEBUG
+CC       ?= $(CROSS_COMPILE)gcc
+CFLAGS   += -Os -std=gnu99 -Wall -I./include -fdata-sections -ffunction-sections
 CLIBS    += -lm
 
 PREFIX   ?= /usr/local
 
 OBJECTS   = $(patsubst %.c, %.o, $(wildcard src/*.c))
-STRIP     = $(ARCH)strip
+STRIP     = $(CROSS_COMPILE)strip
 
 .PHONY: all
 all: $(OBJECTS)
 	$(CC) -o $(TARGET) $^ $(CFLAGS) $(CLIBS)
-	$(STRIP) $(TARGET)
 
 .PHONY: clean
 clean:
