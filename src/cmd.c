@@ -58,6 +58,12 @@ void clear() {
   printf("\nclear all, bye\n");
 }
 
+bottle_error_t cli_levenshtein(cli_function_arguments) {
+  command_length_check(!=, 3);
+  printf("%d\n", levenshtein(commands[1], commands[2]));
+  return bottle_ok;
+}
+
 bottle_error_t cli_bloom(commands_t commands, int commands_length) {
   if (bloom == NULL) {
     bloom = bloom_create();

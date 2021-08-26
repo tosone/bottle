@@ -16,9 +16,6 @@ hll_t *hll_init(void) {
   uint32_t i;
   hll_t *h;
   h = (hll_t *)calloc(1, sizeof(hll_t));
-  if (!h) {
-    return HLL_ERROR;
-  }
 
   h->PE[0] = 1;
   for (i = 1; i < 64; i++) {
@@ -27,7 +24,7 @@ hll_t *hll_init(void) {
   return h;
 }
 
-uint8_t hll_add(hll_t *h, char *data, size_t datalen) {
+void hll_add(hll_t *h, char *data, size_t datalen) {
   uint64_t hash, value;
   uint16_t index;
   uint8_t zero;
@@ -37,7 +34,6 @@ uint8_t hll_add(hll_t *h, char *data, size_t datalen) {
   value = HLL_GET_VALUE(hash);
   zero = hll_get_zeros(value);
   h->registers[index] = MAX(zero, h->registers[index]);
-  return HLL_OK;
 }
 
 uint64_t hll_count(hll_t *h) {

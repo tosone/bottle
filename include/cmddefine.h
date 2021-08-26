@@ -92,3 +92,5 @@
 #define COMMAND_HLL_COUNT "count"
 #define COMMAND_HLL_TEST "test"
 #define COMMAND_HLL_PRINT "print"
+
+#define COMMAND_LEVENSHTEIN "levenshtein"

@@ -19,16 +19,13 @@
 #define MIN(X, Y) ((X) < (Y) ? (X) : (Y))
 #define MAX(X, Y) ((X) > (Y) ? (X) : (Y))
 
-#define HLL_OK 1
-#define HLL_ERROR 0
-
 typedef struct hll_t {
   uint8_t registers[HLL_REGISTERS];
   double PE[64];
 } hll_t;
 
 hll_t *hll_init(void);
-uint8_t hll_add(hll_t *h, char *data, size_t datalen);
+void hll_add(hll_t *h, char *data, size_t datalen);
 void hll_print(hll_t *h);
 void hll_test(hll_t *h);
 uint64_t hll_count(hll_t *h);
