@@ -8,6 +8,7 @@
 #include <cmddefine.h>
 
 #include <avl.h>
+#include <bitarray.h>
 #include <bittree.h>
 #include <bloom.h>
 #include <command.h>
@@ -52,3 +53,4 @@ bottle_error_t cli_bittree(cli_function_arguments);
 bottle_error_t cli_trie(cli_function_arguments);
 bottle_error_t cli_hll(cli_function_arguments);
 bottle_error_t cli_levenshtein(cli_function_arguments);
+bottle_error_t cli_bitarray(cli_function_arguments);

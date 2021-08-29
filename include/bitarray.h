@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -18,4 +19,5 @@ bitarray_t *bitarray_create();
 void bitarray_set(bitarray_t *bitarray, char *key, size_t index, uint8_t value);
 uint8_t bitarray_get(bitarray_t *bitarray, char *key, size_t index);
 size_t bitarray_count(bitarray_t *bitarray);
-void bitarray_free();
+void bitarray_free(bitarray_t *bitarray);
+void bitarray_test(bitarray_t *bitarray);

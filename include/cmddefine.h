@@ -94,3 +94,9 @@
 #define COMMAND_HLL_PRINT "print"
 
 #define COMMAND_LEVENSHTEIN "levenshtein"
+
+#define COMMAND_BITARRAY "bitarray"
+#define COMMAND_BITARRAY_SET "set"
+#define COMMAND_BITARRAY_GET "get"
+#define COMMAND_BITARRAY_COUNT "count"
+#define COMMAND_BITARRAY_TEST "test"

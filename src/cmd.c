@@ -29,6 +29,7 @@ dag_t *dag;
 bittree_t *bittree;
 trie_t *trie;
 hll_t *hll;
+bitarray_t *bitarray;
 
 void clear() {
   if (hmap != NULL) {
@@ -54,6 +55,9 @@ void clear() {
   }
   if (dag != NULL) {
     dag_free(dag);
+  }
+  if (bitarray != NULL) {
+    bitarray_free(bitarray);
   }
   printf("\nclear all, bye\n");
 }
@@ -94,6 +98,17 @@ bottle_error_t cli_bittree(commands_t commands, int commands_length) {
   if (strequal(commands[1], COMMAND_BITTREE_TEST)) {
     command_length_check(!=, 2);
     bittree_test(bittree);
+  }
+  return bottle_ok;
+}
+
+bottle_error_t cli_bitarray(commands_t commands, int commands_length) {
+  if (bitarray == NULL) {
+    bitarray = bitarray_create();
+  }
+  if (strequal(commands[1], COMMAND_BITARRAY_TEST)) {
+    command_length_check(!=, 2);
+    bitarray_test(bitarray);
   }
   return bottle_ok;
 }
