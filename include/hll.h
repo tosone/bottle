@@ -6,6 +6,8 @@
 
 #include <murmurhash.h>
 
+#include <xxhash.h>
+
 #define HLL_REGISTERS (1 << 14)
 
 #define HLL_INDEX_BITS 14

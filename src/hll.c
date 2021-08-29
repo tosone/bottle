@@ -25,11 +25,10 @@ hll_t *hll_init(void) {
 }
 
 void hll_add(hll_t *h, char *data, size_t datalen) {
-  uint64_t hash, value;
+  uint64_t value;
   uint16_t index;
   uint8_t zero;
-
-  hash = murmurhash64((void *)data, datalen);
+  XXH64_hash_t hash = XXH64((void *)data, datalen, 0);
   index = (uint16_t)HLL_GET_INDEX(hash);
   value = HLL_GET_VALUE(hash);
   zero = hll_get_zeros(value);
