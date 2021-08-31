@@ -20,6 +20,7 @@
 #include <lru.h>
 #include <rbtree.h>
 #include <skiplist.h>
+#include <sort.h>
 #include <stack.h>
 #include <trie.h>
 
@@ -54,3 +55,4 @@ bottle_error_t cli_trie(cli_function_arguments);
 bottle_error_t cli_hll(cli_function_arguments);
 bottle_error_t cli_levenshtein(cli_function_arguments);
 bottle_error_t cli_bitarray(cli_function_arguments);
+bottle_error_t cli_sort(cli_function_arguments);

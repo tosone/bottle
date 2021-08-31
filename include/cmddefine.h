@@ -100,3 +100,6 @@
 #define COMMAND_BITARRAY_GET "get"
 #define COMMAND_BITARRAY_COUNT "count"
 #define COMMAND_BITARRAY_TEST "test"
+
+#define COMMAND_SORT "sort"
+#define COMMAND_SORT_TEST "test"

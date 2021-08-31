@@ -85,6 +85,8 @@ int main(int argc, char const *argv[]) {
         COMMANDS_CHECK(cli_levenshtein(commands, commands_length));
       } else if (strequal(commands[0], COMMAND_BITARRAY)) {
         COMMANDS_CHECK(cli_bitarray(commands, commands_length));
+      } else if (strequal(commands[0], COMMAND_SORT)) {
+        COMMANDS_CHECK(cli_sort(commands, commands_length));
       } else {
         printf("%s\n", errstr(error_invalid_command));
       }

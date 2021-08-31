@@ -30,6 +30,7 @@ bittree_t *bittree;
 trie_t *trie;
 hll_t *hll;
 bitarray_t *bitarray;
+sort_t *sort;
 
 void clear() {
   if (hmap != NULL) {
@@ -58,6 +59,9 @@ void clear() {
   }
   if (bitarray != NULL) {
     bitarray_free(bitarray);
+  }
+  if (sort != NULL) {
+    sort_free(sort);
   }
   printf("\nclear all, bye\n");
 }
@@ -98,6 +102,17 @@ bottle_error_t cli_bittree(commands_t commands, int commands_length) {
   if (strequal(commands[1], COMMAND_BITTREE_TEST)) {
     command_length_check(!=, 2);
     bittree_test(bittree);
+  }
+  return bottle_ok;
+}
+
+bottle_error_t cli_sort(commands_t commands, int commands_length) {
+  if (sort == NULL) {
+    sort = sort_create();
+  }
+  if (strequal(commands[1], COMMAND_SORT_TEST)) {
+    command_length_check(!=, 2);
+    sort_test(sort);
   }
   return bottle_ok;
 }
