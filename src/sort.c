@@ -70,9 +70,9 @@ void sort_print(sort_t *sort) {
   for (size_t i = 0; i < sort->count; i++) {
     if (first) {
       first = false;
-      printf("%lld", sort->data[i]);
+      printf("%" PRId64, sort->data[i]);
     } else {
-      printf(" %lld", sort->data[i]);
+      printf(" %" PRId64, sort->data[i]);
     }
   }
   printf("\n");
