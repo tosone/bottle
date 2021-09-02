@@ -12,10 +12,11 @@ STRIP     = $(CROSS_COMPILE)strip
 .PHONY: all
 all: $(OBJECTS)
 	$(CC) -o $(TARGET) $^ $(CFLAGS) $(CLIBS)
+	$(STRIP) $(TARGET)
 
 .PHONY: clean
 clean:
-	$(RM) -r src/*.o *.o *.a *.out $(TARGET) $(TARGET).exe
+	$(RM) -r src/*.o *.o *.a *.out $(TARGET)
 
 .PHONY: install
 install:
