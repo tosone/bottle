@@ -13,7 +13,7 @@
 #define VERSION "v1.0.0"
 
 const char *hostory_file = "history.txt";
-const char *prompt = "\x1b[1;32mbottle\x1b[0m> ";
+const char *prompt = "> ";
 
 #define COMMANDS_CHECK(x)           \
   bottle_error_t result = x;        \

@@ -53,18 +53,6 @@ sort_t *sort_duplicate(sort_t *sort) {
   return new_sort;
 }
 
-void sort_test(sort_t *sort) {
-  sort_add(sort, 1);
-  sort_add(sort, -1);
-  sort_add(sort, 10);
-  sort_add(sort, 8);
-  sort_add(sort, 0);
-  sort_remove(sort, 0);
-  sort_quick(sort);
-}
-
-int cmpfunc(const void *a, const void *b) { return (*(int64_t *)b > *(int64_t *)a) ? 1 : 0; }
-
 void sort_print(sort_t *sort) {
   bool first = true;
   for (size_t i = 0; i < sort->count; i++) {
@@ -78,9 +66,42 @@ void sort_print(sort_t *sort) {
   printf("\n");
 }
 
-void sort_quick(sort_t *sort) {
+int cmpfunc(const void *a, const void *b) {
+  int64_t arg1 = *(const int64_t *)a;
+  int64_t arg2 = *(const int64_t *)b;
+  if (arg1 < arg2) {
+    return 1;
+  } else if (arg1 > arg2) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
+
+sort_t *sort_quick(sort_t *sort) {
   sort_t *new_sort = sort_duplicate(sort);
   qsort(new_sort->data, new_sort->count, sizeof(int64_t), cmpfunc);
-  sort_print(new_sort);
-  free(new_sort);
+  return new_sort;
+}
+
+void sort_test(sort_t *sort) {
+  for (int64_t i = 0; i < 10; i++) {
+    sort_add(sort, i);
+  }
+
+  int64_t target1[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  CHECK_BUF_EQ(sort->data, target1, sort->count * sizeof(int64_t));
+
+  sort_add(sort, 100);
+  int64_t target2[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100};
+  CHECK_BUF_EQ(sort->data, target2, sort->count * sizeof(int64_t));
+  CHECK_EQ(sort->count, 11);
+
+  sort_remove(sort, 100);
+  CHECK_BUF_EQ(sort->data, target1, sort->count * sizeof(int64_t));
+  CHECK_EQ(sort->count, 10);
+
+  sort_t *new_sort_quick = sort_quick(sort);
+  int64_t target_quick[] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+  CHECK_BUF_EQ(new_sort_quick->data, target_quick, sort->count * sizeof(int64_t));
 }

@@ -63,7 +63,7 @@ void clear() {
   if (sort != NULL) {
     sort_free(sort);
   }
-  printf("\nclear all, bye\n");
+  printf("clear all, bye\n");
 }
 
 bottle_error_t cli_levenshtein(cli_function_arguments) {
