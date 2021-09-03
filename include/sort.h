@@ -21,3 +21,5 @@ void sort_test(sort_t *sort);
 void sort_print(sort_t *sort);
 
 sort_t *sort_quick(sort_t *sort);
+sort_t *sort_selection(sort_t *sort);
+sort_t *sort_bubble(sort_t *sort);

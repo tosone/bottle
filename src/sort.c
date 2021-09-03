@@ -1,5 +1,15 @@
 #include <sort.h>
 
+#define SWAP(x, y)    \
+  do {                \
+    typeof(x) _x = x; \
+    typeof(y) _y = y; \
+    x = _y;           \
+    y = _x;           \
+  } while (0)
+
+typedef int COMP_FUNC(void **a, void **b);
+
 sort_t *sort_create() {
   sort_t *sort = (sort_t *)malloc(sizeof(sort_t));
   sort->count = 0;
@@ -84,13 +94,63 @@ sort_t *sort_quick(sort_t *sort) {
   return new_sort;
 }
 
+sort_t *sort_insertion(sort_t *sort) {
+  sort_t *new_sort = sort_duplicate(sort);
+  int64_t temp;
+  for (size_t i = 1; i < new_sort->count; i++) {
+    temp = new_sort->data[i];
+    size_t j = i;
+    while (j > 0 && new_sort->data[j - 1] < temp) {
+      new_sort->data[j] = new_sort->data[j - 1];
+      j--;
+    }
+    new_sort->data[j] = temp;
+  }
+  return new_sort;
+}
+
+sort_t *sort_bubble(sort_t *sort) {
+  sort_t *new_sort = sort_duplicate(sort);
+  bool sorted = false;
+  for (size_t i = 0; i < new_sort->count; i++) {
+    sorted = true;
+    for (size_t j = 0; j < new_sort->count - 1; j++) {
+      if (new_sort->data[j] < new_sort->data[j + 1]) {
+        SWAP(new_sort->data[j], new_sort->data[j + 1]);
+        sorted = false;
+      }
+    }
+    if (sorted) {
+      break;
+    }
+  }
+  return new_sort;
+}
+
+sort_t *sort_selection(sort_t *sort) {
+  sort_t *new_sort = sort_duplicate(sort);
+  for (size_t i = 0; i < new_sort->count - 1; i++) {
+    size_t max = i;
+    for (size_t j = i + 1; j < new_sort->count; j++) {
+      if (new_sort->data[max] < new_sort->data[j]) {
+        max = j;
+      }
+    }
+    if (max != i) {
+      SWAP(new_sort->data[i], new_sort->data[max]);
+    }
+  }
+  return new_sort;
+}
+
 void sort_test(sort_t *sort) {
   for (int64_t i = 0; i < 10; i++) {
+    printf("> sort add %" PRId64 "\n", i);
     sort_add(sort, i);
   }
 
-  int64_t target1[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-  CHECK_BUF_EQ(sort->data, target1, sort->count * sizeof(int64_t));
+  int64_t target_origin[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  CHECK_BUF_EQ(sort->data, target_origin, sort->count * sizeof(int64_t));
 
   sort_add(sort, 100);
   int64_t target2[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100};
@@ -98,10 +158,29 @@ void sort_test(sort_t *sort) {
   CHECK_EQ(sort->count, 11);
 
   sort_remove(sort, 100);
-  CHECK_BUF_EQ(sort->data, target1, sort->count * sizeof(int64_t));
+  CHECK_BUF_EQ(sort->data, target_origin, sort->count * sizeof(int64_t));
   CHECK_EQ(sort->count, 10);
 
+  int64_t target[] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+
   sort_t *new_sort_quick = sort_quick(sort);
-  int64_t target_quick[] = {9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
-  CHECK_BUF_EQ(new_sort_quick->data, target_quick, sort->count * sizeof(int64_t));
+  CHECK_BUF_EQ(new_sort_quick->data, target, new_sort_quick->count * sizeof(int64_t));
+  free(new_sort_quick);
+
+  sort_t *new_sort_insertion = sort_insertion(sort);
+  CHECK_BUF_EQ(new_sort_insertion->data, target, new_sort_insertion->count * sizeof(int64_t));
+  free(new_sort_insertion);
+
+  sort_t *new_sort_selection = sort_selection(sort);
+  CHECK_BUF_EQ(new_sort_selection->data, target, new_sort_selection->count * sizeof(int64_t));
+  free(new_sort_selection);
+
+  sort_t *new_sort_bubble = sort_bubble(sort);
+  CHECK_BUF_EQ(new_sort_bubble->data, target, new_sort_bubble->count * sizeof(int64_t));
+  free(new_sort_bubble);
+
+  for (int64_t i = 0; i < 10; i++) {
+    printf("> sort del %" PRId64 "\n", i);
+    sort_remove(sort, i);
+  }
 }
