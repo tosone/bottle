@@ -12,7 +12,7 @@
 
 #define VERSION "v1.0.0"
 
-const char *hostory_file = "history.txt";
+const char *history_file = "history.txt";
 const char *prompt = "> ";
 
 #define COMMANDS_CHECK(x)           \
@@ -69,6 +69,8 @@ int main(int argc, char const *argv[]) {
           COMMANDS_CHECK(cli_lru(commands, commands_length));
         } else if (strequal(commands[0], COMMAND_AVL)) {
           COMMANDS_CHECK(cli_avl(commands, commands_length));
+        } else if (strequal(commands[0], COMMAND_BST)) {
+          COMMANDS_CHECK(cli_bst(commands, commands_length));
         } else if (strequal(commands[0], COMMAND_SKLIST)) {
           COMMANDS_CHECK(cli_sklist(commands, commands_length));
         } else if (strequal(commands[0], COMMAND_RBTREE)) {

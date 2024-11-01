@@ -20,6 +20,7 @@
 hashmap_t *hmap;
 LRU *lru;
 avl_entry_t *avl;
+bst_t *bst;
 skiplist *sklist;
 rbtree_t *rbtree;
 deque_t *deque;
@@ -155,6 +156,26 @@ bottle_error_t cli_hll(cli_function_arguments) {
   } else if (strequal(commands[1], COMMAND_HLL_COUNT)) {
     command_length_check(!=, 2);
     printf("%" PRId64 "\n", hll_count(hll));
+  }
+  return bottle_ok;
+}
+
+bottle_error_t cli_bst(cli_function_arguments) {
+  if (bst == NULL) {
+    bst = bst_create();
+  }
+  if (strequal(commands[1], COMMAND_BST_ADD)) {
+    command_length_check(!=, 3);
+    bst_insert_node(bst, atoi(commands[2]));
+  } else if (strequal(commands[1], COMMAND_BST_DUMP)) {
+    command_length_check(!=, 3);
+    bst_dump(bst, commands[2]);
+  } else if (strequal(commands[1], COMMAND_BST_TEST)) {
+    command_length_check(!=, 2);
+    bst_test(bst);
+  } else if (strequal(commands[1], COMMAND_BST_DUMP_TO_LIST)) {
+    command_length_check(!=, 3);
+    bst_list_dump(to_double_list(bst), commands[2]);
   }
   return bottle_ok;
 }
