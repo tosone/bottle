@@ -103,3 +103,9 @@
 
 #define COMMAND_SORT "sort"
 #define COMMAND_SORT_TEST "test"
+
+#define COMMAND_BST "bst"
+#define COMMAND_BST_ADD "add"
+#define COMMAND_BST_DUMP "dump"
+#define COMMAND_BST_TEST "test"
+#define COMMAND_BST_DUMP_TO_LIST "dump_to_list"

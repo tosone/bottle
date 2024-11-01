@@ -11,6 +11,7 @@
 #include <bitarray.h>
 #include <bittree.h>
 #include <bloom.h>
+#include <bst.h>
 #include <command.h>
 #include <dag.h>
 #include <deque.h>
@@ -44,6 +45,7 @@ bottle_error_t cli_pi(cli_function_arguments);
 bottle_error_t cli_hmap(cli_function_arguments);
 bottle_error_t cli_lru(cli_function_arguments);
 bottle_error_t cli_avl(cli_function_arguments);
+bottle_error_t cli_bst(cli_function_arguments);
 bottle_error_t cli_sklist(cli_function_arguments);
 bottle_error_t cli_rbtree(cli_function_arguments);
 bottle_error_t cli_deque(cli_function_arguments);

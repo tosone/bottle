@@ -58,3 +58,4 @@ bottle
 *.txt
 
 .vscode/
+*.png
