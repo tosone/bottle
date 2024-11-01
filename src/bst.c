@@ -96,7 +96,7 @@ void bst_list_dump_helper(bst_node_t *node, bst_node_t *end, FILE *stream) {
       fprintf(stream, "%d -> %d;\n", node->value, node->left->value);
     }
     if (node->right != NULL) {
-      fprintf(stream, "%d -> %d;\n", node->right->value, node->value);
+      fprintf(stream, "%d -> %d;\n", node->value, node->right->value);
     }
     if (node->left == end) {
       return;
