@@ -143,6 +143,8 @@ sort_t *sort_selection(sort_t *sort) {
   return new_sort;
 }
 
+TAU_NO_MAIN()
+
 void sort_test(sort_t *sort) {
   for (int64_t i = 0; i < 10; i++) {
     printf("> sort add %" PRId64 "\n", i);

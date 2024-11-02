@@ -27,10 +27,9 @@
 
 #include <pi.h>
 
-#define command_length_check(x, y)                 \
-  if (commands_length x y) {                       \
-    printf("%s\n", errstr(error_invalid_command)); \
-    return error_invalid_command;                  \
+#define command_length_check(x, y) \
+  if (commands_length x y) {       \
+    return error_invalid_command;  \
   }
 
 #define cli_function_arguments commands_t commands, int commands_length
