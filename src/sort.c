@@ -1,12 +1,15 @@
 #include <sort.h>
 
-#define SWAP(x, y)    \
-  do {                \
-    typeof(x) _x = x; \
-    typeof(y) _y = y; \
-    x = _y;           \
-    y = _x;           \
+#define SWAP_GENERIC(x, y)                          \
+  do {                                              \
+    _Generic((x), int64_t: swap_int64)(&(x), &(y)); \
   } while (0)
+
+void swap_int64(int64_t *x, int64_t *y) {
+  int64_t temp = *x;
+  *x = *y;
+  *y = temp;
+}
 
 typedef int COMP_FUNC(void **a, void **b);
 
@@ -116,7 +119,7 @@ sort_t *sort_bubble(sort_t *sort) {
     sorted = true;
     for (size_t j = 0; j < new_sort->count - 1; j++) {
       if (new_sort->data[j] < new_sort->data[j + 1]) {
-        SWAP(new_sort->data[j], new_sort->data[j + 1]);
+        SWAP_GENERIC(new_sort->data[j], new_sort->data[j + 1]);
         sorted = false;
       }
     }
@@ -137,7 +140,7 @@ sort_t *sort_selection(sort_t *sort) {
       }
     }
     if (max != i) {
-      SWAP(new_sort->data[i], new_sort->data[max]);
+      SWAP_GENERIC(new_sort->data[i], new_sort->data[max]);
     }
   }
   return new_sort;

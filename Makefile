@@ -1,7 +1,7 @@
 TARGET    = bottle
 
 CC       ?= $(CROSS_COMPILE)gcc
-CFLAGS   += -Os -std=gnu99 -Wall -I./include -fdata-sections -ffunction-sections
+CFLAGS   += -Os -std=gnu11 -Wall -I./include -fdata-sections -ffunction-sections
 CLIBS    += -lm
 
 PREFIX   ?= /usr/local
