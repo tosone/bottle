@@ -113,15 +113,58 @@ void bst_list_dump(bst_node_t *node, char *filename) {
   fclose(stream);
 }
 
-void bst_test(bst_t *tree) {
-  bst_insert_node(tree, 10);
-  bst_insert_node(tree, 6);
-  bst_insert_node(tree, 4);
-  bst_insert_node(tree, 8);
-  bst_insert_node(tree, 14);
-  bst_insert_node(tree, 12);
-  bst_insert_node(tree, 16);
+void bst_test(bst_t **tree) {
+  printf("> %s %s %d\n", COMMAND_BST, COMMAND_BST_ADD, 10);
+  bst_insert_node(*tree, 10);
+  printf("> %s %s %d\n", COMMAND_BST, COMMAND_BST_ADD, 6);
+  bst_insert_node(*tree, 6);
+  printf("> %s %s %d\n", COMMAND_BST, COMMAND_BST_ADD, 4);
+  bst_insert_node(*tree, 4);
+  printf("> %s %s %d\n", COMMAND_BST, COMMAND_BST_ADD, 8);
+  bst_insert_node(*tree, 8);
+  printf("> %s %s %d\n", COMMAND_BST, COMMAND_BST_ADD, 14);
+  bst_insert_node(*tree, 14);
+  printf("> %s %s %d\n", COMMAND_BST, COMMAND_BST_ADD, 12);
+  bst_insert_node(*tree, 12);
+  printf("> %s %s %d\n", COMMAND_BST, COMMAND_BST_ADD, 16);
+  bst_insert_node(*tree, 16);
 
-  // bst_node_t *node = to_double_list(tree);
-  // bst_list_dump(node, "test.dot");
+  printf("> %s %s %s\n", COMMAND_BST, COMMAND_BST_DUMP_TO_LIST, "test.dot");
+  bst_node_t *node = to_double_list(*tree);
+  bst_list_dump(node, "test.dot");
+
+  bst_list_free(*tree);
+  *tree = NULL;
+}
+
+void bst_node_free(bst_node_t *node) {
+  if (node == NULL)
+    return;
+  bst_node_free(node->left);
+  bst_node_free(node->right);
+  free(node);
+}
+
+void bst_free(bst_t *tree) {
+  if (tree == NULL)
+    return;
+  bst_node_free(tree->root);
+  free(tree);
+}
+
+void _bst_list_free(bst_node_t *node, bst_node_t *end) {
+  if (node == NULL)
+    return;
+  if (node->left == end) {
+    return;
+  }
+  _bst_list_free(node->left, end);
+  free(node);
+}
+
+void bst_list_free(bst_t *tree) {
+  if (tree == NULL)
+    return;
+  _bst_list_free(tree->root, tree->root);
+  free(tree);
 }

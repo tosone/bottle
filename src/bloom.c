@@ -3,7 +3,7 @@
 uint64_t entries = 1e6;
 double_t error = 0.01;
 
-// inpired by https://git.sr.ht/~sircmpwn/bloom/tree/master/item/bloom.c and
+// inspired by https://git.sr.ht/~sircmpwn/bloom/tree/master/item/bloom.c and
 // http://en.wikipedia.org/wiki/Bloom_filter
 
 // Optimal number of bits is:

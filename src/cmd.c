@@ -64,6 +64,9 @@ void clear() {
   if (sort != NULL) {
     sort_free(sort);
   }
+  if (bst != NULL) {
+    bst_free(bst);
+  }
   printf("clear all, bye\n");
 }
 
@@ -172,10 +175,12 @@ bottle_error_t cli_bst(cli_function_arguments) {
     bst_dump(bst, commands[2]);
   } else if (strequal(commands[1], COMMAND_BST_TEST)) {
     command_length_check(!=, 2);
-    bst_test(bst);
+    bst_test(&bst);
   } else if (strequal(commands[1], COMMAND_BST_DUMP_TO_LIST)) {
     command_length_check(!=, 3);
     bst_list_dump(to_double_list(bst), commands[2]);
+    bst_list_free(bst);
+    bst = NULL;
   }
   return bottle_ok;
 }

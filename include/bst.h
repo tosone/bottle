@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <cmddefine.h>
+
 // Binary Search Tree
 
 typedef struct bst_node_t {
@@ -19,6 +21,8 @@ bst_t *bst_create();
 bst_node_t *bst_create_node(int value);
 bst_t *bst_insert_node(bst_t *tree, int value);
 void bst_dump(bst_t *tree, char *filename);
-void bst_test(bst_t *tree);
+void bst_test(bst_t **tree);
 void bst_list_dump(bst_node_t *node, char *filename);
 bst_node_t *to_double_list(bst_t *tree);
+void bst_free(bst_t *tree);
+void bst_list_free(bst_t *tree);
